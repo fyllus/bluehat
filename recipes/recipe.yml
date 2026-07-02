@@ -14,17 +14,15 @@ modules:
   - type: dnf
     repos:
       copr:
-        - swayfx/swayfx
+        - swayfx/swayfx        
         - tofik/nwg-shell
+        - lihaohong/yazi
+        - lionheartp/Hyprland 
         - che/zed
-        - greg/noctalia
       files:
         - https://repo.librewolf.net/librewolf.repo
     install:
       packages:
-        # Noctalia Shell
-        - noctalia
-
         # Core Dev & Container Stack
         - git
         - podman-compose
@@ -35,7 +33,7 @@ modules:
         - fzf
         - yazi
         - chafa
-        - imagemagick          # Corrigido para minúsculo
+        - ImageMagick   
         - ffmpegthumbnailer
         - poppler-utils
         - 7zip
@@ -85,6 +83,10 @@ modules:
         - sdbus-cpp
         - libqalculate
         - jemalloc
-        - brightnessctl
+        - noctalia
+        - amixer
+        - pamixer
+        - brightnessctl  
+
 
   - type: signing
