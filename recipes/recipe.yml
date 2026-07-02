@@ -91,6 +91,7 @@ modules:
         - libqalculate
         - jemalloc
         - noctalia
+        - noctalia-shell
         - amixer
         - pamixer
         - brightnessctl
