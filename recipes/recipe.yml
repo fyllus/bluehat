@@ -1,3 +1,15 @@
+
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
+
+name: bluehat
+description: Blue as smurf, softly as the ocean.
+
+
+base-image: ghcr.io/ublue-os/base-main
+image-version: latest
+
+modules:
   - type: dnf
     repos:
       copr:
@@ -8,7 +20,7 @@
         - che/zed
       files:
         add:
-          - https://librewolf.net
+          - https://rpm.librewolf.net/librewolf-repo.repo
     install:
       packages:
         # Core Dev & Container Stack
