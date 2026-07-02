@@ -19,15 +19,19 @@ modules:
         - lihaohong/yazi
         - lionheartp/Hyprland 
         - che/zed
+    files:
+        - https://rpm.librewolf.net/librewolf-repo.repo
     install:
       packages:
         # Core Dev & Container Stack
         - git
         - podman-compose
+        - podman
         - openssh-clients
 
         # Utilitários de Terminal & CLI
         - micro
+        - btop
         - fzf
         - yazi
         - chafa
@@ -41,13 +45,15 @@ modules:
 
         # Window Manager & Display Server
         - swayfx
+        - gtklock
         - xorg-x11-server-Xwayland
 
         # Ecossistema Visual & GUI Apps
-        - nwg-look
+        #- nwg-look
         - nwg-bar
         - zed
         - godot
+        - librewolf
 
         # Fontes Essenciais
         - google-noto-sans-fonts
@@ -56,7 +62,7 @@ modules:
 
         # Core LXQt (Arranque e Serviços)
         - lxqt-policykit
-        - lxqt-session
+        #- lxqt-session
 
         # Network & Hardware Management
         - NetworkManager-wifi
