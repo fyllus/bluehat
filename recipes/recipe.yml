@@ -8,7 +8,7 @@
         - che/zed
       files:
         add:
-          - https://rpm.librewolf.net/librewolf-repo.repo
+          - https://librewolf.net
     install:
       packages:
         # Core Dev & Container Stack
