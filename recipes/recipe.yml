@@ -20,8 +20,8 @@ modules:
     repos:
       copr:
         - swayfx/swayfx        
-        - tofik/nwg-shell
-        - lihaohong/yazi
+        #- tofik/nwg-shell
+        #- lihaohong/yazi
         - lionheartp/Hyprland 
         - che/zed
       files:
@@ -35,10 +35,10 @@ modules:
         - openssh-clients
 
         # Utilitários de Terminal & CLI
+        - alacritty
         - micro
         - btop
         - fzf
-        - yazi
         - chafa
         - ImageMagick   
         - ffmpegthumbnailer
@@ -55,7 +55,7 @@ modules:
 
         # Ecossistema Visual & GUI Apps
         #- nwg-look
-        - nwg-bar
+        #- nwg-bar
         - zed
         - godot
         - librewolf
@@ -91,7 +91,6 @@ modules:
         - libqalculate
         - jemalloc
         - noctalia
-        - noctalia-shell
         - amixer
         - pamixer
         - brightnessctl
