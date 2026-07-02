@@ -1,16 +1,3 @@
-# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-name: bluehat
-description: So blue as smurf, so softly as the ocean..
-
-base-image: ghcr.io/ublue-os/base-main
-image-version: latest
-
-modules:
-  - type: files
-    files:
-      - source: system
-        destination: /
-
   - type: dnf
     repos:
       copr:
@@ -19,8 +6,9 @@ modules:
         - lihaohong/yazi
         - lionheartp/Hyprland 
         - che/zed
-    files:
-        - https://rpm.librewolf.net/librewolf-repo.repo
+      files:
+        add:
+          - https://rpm.librewolf.net/librewolf-repo.repo
     install:
       packages:
         # Core Dev & Container Stack
@@ -89,5 +77,3 @@ modules:
         - amixer
         - pamixer
         - brightnessctl  
-
-  - type: signing
