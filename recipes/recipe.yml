@@ -35,6 +35,7 @@ modules:
         - openssh-clients
 
         # Utilitários de Terminal & CLI
+        - nemo
         - alacritty
         - micro
         - btop
