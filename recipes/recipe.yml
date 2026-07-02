@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: bluehat
-description: Minha distro customizada com SwayFX, Noctalia Shell e base leve LXQt.
+description: So blue as smurf, so softly as the ocean..
 
 base-image: ghcr.io/ublue-os/base-main
 image-version: latest
@@ -19,8 +19,6 @@ modules:
         - lihaohong/yazi
         - lionheartp/Hyprland 
         - che/zed
-      files:
-        - https://repo.librewolf.net/librewolf.repo
     install:
       packages:
         # Core Dev & Container Stack
@@ -49,7 +47,6 @@ modules:
         - nwg-look
         - nwg-bar
         - zed
-        - librewolf
         - godot
 
         # Fontes Essenciais
@@ -65,7 +62,6 @@ modules:
         - NetworkManager-wifi
         - iw
         - bluez
-        - bluez-utils
 
         # Gráficos e Aceleração Core
         - mesa-dri-drivers
@@ -87,6 +83,5 @@ modules:
         - amixer
         - pamixer
         - brightnessctl  
-
 
   - type: signing
