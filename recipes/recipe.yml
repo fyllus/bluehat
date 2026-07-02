@@ -17,17 +17,16 @@ modules:
         - swayfx/swayfx
         - tofik/nwg-shell
         - che/zed
-        - greg/noctalia        # COPR correto que fornece o noctalia-shell
+        - greg/noctalia
       files:
         - https://repo.librewolf.net/librewolf.repo
     install:
       packages:
-        # Noctalia Shell (Instalado via COPR de forma nativa)
+        # Noctalia Shell
         - noctalia
 
         # Core Dev & Container Stack
         - git
-        - git-core
         - podman-compose
         - openssh-clients
 
@@ -36,7 +35,7 @@ modules:
         - fzf
         - yazi
         - chafa
-        - ImageMagick
+        - imagemagick          # Corrigido para minúsculo
         - ffmpegthumbnailer
         - poppler-utils
         - 7zip
