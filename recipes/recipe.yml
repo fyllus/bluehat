@@ -25,7 +25,7 @@ modules:
         - lionheartp/Hyprland 
         - che/zed
       files:
-        - https://rpm.librewolf.net/librewolf-repo.repo
+        - https://repo.librewolf.net/librewolf.repo
     install:
       packages:
         # Core Dev & Container Stack
