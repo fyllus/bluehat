@@ -1,20 +1,28 @@
+# Core LXQt (Arranque e Serviços)
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
-
 name: bluehat
-
 description: bluehat, not red.
-
 
 base-image: ghcr.io/ublue-os/base-main
 image-version: latest 
-
 
 modules:
   - type: files
     files:
       - source: system
-        destination: / 
+        destination: /
+  - type: script
+       snippets:
+         - |
+           echo "Instalando o Impala TUI para iwd..."
+           dnf install -y cargo git
+           git clone https://github.com/pythops/impala.git /tmp/impala
+           cd /tmp/impala
+           cargo build --release
+           cp target/release/impala /usr/bin/impala
+           rm -rf /tmp/impala
+            
 
   - type: dnf
     repos:
@@ -42,7 +50,6 @@ modules:
         - j4-dmenu-desktop
         - grim
         - slurp
-        #- swappy
         - nemo
         - yazi
         - dunst
@@ -83,32 +90,31 @@ modules:
 
         # Core LXQt (Arranque e Serviços)
         - lxqt-policykit
-        #- lxqt-session
-
+        
         # Network & Hardware Management
-        #- NetworkManager-wifi
+        # - NetworkManager-wifi
         - iwd
-        #- iwctl
+        # - iwctl
         - iw
         - bluez
 
-        # Gráficos e Aceleração Core
-        - mesa-dri-drivers
-        - mesa-vulkan-drivers
-        - mesa-va-drivers
+        # Gráficos e Aceleração Core (Já inclusos na base)
+        # - mesa-dri-drivers
+        # - mesa-vulkan-drivers
+        # - mesa-va-drivers
 
-        # Infraestrutura de Áudio (PipeWire)
-        - pipewire
-        - pipewire-utils
-        - pipewire-alsa
-        - pipewire-pulseaudio
-        - wireplumber
+        # Infraestrutura de Áudio (Já inclusa na base)
+        # - pipewire
+        # - pipewire-utils
+        # - pipewire-alsa
+        # - pipewire-pulseaudio
+        # - wireplumber
 
         # Dependências de Runtime do Noctalia Shell
-        #- sdbus-cpp
-        #- libqalculate
-        #- jemalloc
-        #- noctalia
+        # - sdbus-cpp
+        # - libqalculate
+        # - jemalloc
+        # - noctalia
         - amixer
         - pamixer
         - brightnessctl
