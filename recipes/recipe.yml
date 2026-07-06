@@ -35,7 +35,12 @@ modules:
         - openssh-clients
 
         # Utilitários de Terminal & CLI
+        - rofi-wayland
+        - grim
+        - slurp
+        - swappy
         - nemo
+        - dunst
         - alacritty
         - micro
         - btop
@@ -46,6 +51,9 @@ modules:
         - poppler-utils
         - 7zip
         - tar
+        - i3blocks
+        - lm_sensors
+        - acpi
         - xz
         - unzip
 
