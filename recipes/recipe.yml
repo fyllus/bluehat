@@ -42,7 +42,7 @@ modules:
         - j4-dmenu-desktop
         - grim
         - slurp
-        - swappy
+        #- swappy
         - nemo
         - yazi
         - dunst
@@ -88,7 +88,7 @@ modules:
         # Network & Hardware Management
         #- NetworkManager-wifi
         - iwd
-        - iwctl
+        #- iwctl
         - iw
         - bluez
 
