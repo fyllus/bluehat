@@ -45,7 +45,7 @@ modules:
         - alacritty
         - micro
         - btop
-        - battop
+        #- battop
         - fzf
         - chafa
         - ImageMagick   
@@ -110,10 +110,4 @@ modules:
 
   - type: script
     snippets:
-      - |
-        echo "Instalando o Impala TUI para iwd..."
-        git clone https://github.com/pythops/impala.git /tmp/impala
-        cd /tmp/impala
-        cargo build --release
-        cp target/release/impala /usr/bin/impala
-        rm -rf /tmp/impala
+      - cargo install impala && cargo install battop --root /usr/
