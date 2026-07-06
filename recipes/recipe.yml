@@ -22,14 +22,11 @@ modules:
         - che/zed
       files:
         - https://repo.librewolf.net/librewolf.repo
-    remove:
-      packages:
-        - NetworkManager
+    
     install:
       packages:
         # Core Dev & Container Stack
         - git
-        - cargo
         - podman-compose
         - podman
         - openssh-clients
@@ -38,14 +35,11 @@ modules:
         - rofi-wayland
         - j4-dmenu-desktop
         - grim
-        - slurp
-        - nemo
+        - slurp        
         - yazi
         - dunst
-        - alacritty
         - micro
         - btop
-        #- battop
         - fzf
         - chafa
         - ImageMagick   
@@ -81,24 +75,10 @@ modules:
         - lxqt-policykit
         
         # Network & Hardware Management
-        # - NetworkManager-wifi
-        - iwd
-        # - iwctl
+        - NetworkManager-wifi        
         - iw
         - bluez
-
-        # Gráficos e Aceleração Core (Já inclusos na base)
-        # - mesa-dri-drivers
-        # - mesa-vulkan-drivers
-        # - mesa-va-drivers
-
-        # Infraestrutura de Áudio (Já inclusa na base)
-        # - pipewire
-        # - pipewire-utils
-        # - pipewire-alsa
-        # - pipewire-pulseaudio
-        # - wireplumber
-
+               
         # Dependências de Runtime do Noctalia Shell
         # - sdbus-cpp
         # - libqalculate
@@ -108,6 +88,4 @@ modules:
         - pamixer
         - brightnessctl
 
-  - type: script
-    snippets:
-      - cargo install impala && cargo install battop --root /usr/
+  
