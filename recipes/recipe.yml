@@ -11,17 +11,6 @@ modules:
     files:
       - source: system
         destination: /
-  - type: script
-       snippets:
-         - |
-           echo "Instalando o Impala TUI para iwd..."
-           dnf install -y cargo git
-           git clone https://github.com/pythops/impala.git /tmp/impala
-           cd /tmp/impala
-           cargo build --release
-           cp target/release/impala /usr/bin/impala
-           rm -rf /tmp/impala
-            
 
   - type: dnf
     repos:
@@ -117,3 +106,15 @@ modules:
         - amixer
         - pamixer
         - brightnessctl
+
+  - type: script
+    snippets:
+      - |
+        echo "Instalando o Impala TUI para iwd..."
+        dnf install -y cargo git
+        git clone https://github.com/pythops/impala.git /tmp/impala
+        cd /tmp/impala
+        cargo build --release
+        cp target/release/impala /usr/bin/impala
+        rm -rf /tmp/impala
+        dnf remove -y cargo
