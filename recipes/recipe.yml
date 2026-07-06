@@ -20,12 +20,15 @@ modules:
     repos:
       copr:
         - swayfx/swayfx        
-        #- tofik/nwg-shell
-        #- lihaohong/yazi
+        - tofik/nwg-shell
+        - lihaohong/yazi
         - lionheartp/Hyprland 
         - che/zed
       files:
         - https://repo.librewolf.net/librewolf.repo
+    remove:
+      packages:
+        - NetworkManager
     install:
       packages:
         # Core Dev & Container Stack
@@ -41,10 +44,12 @@ modules:
         - slurp
         - swappy
         - nemo
+        - yazi
         - dunst
         - alacritty
         - micro
         - btop
+        - battop
         - fzf
         - chafa
         - ImageMagick   
@@ -64,8 +69,8 @@ modules:
         - xorg-x11-server-Xwayland
 
         # Ecossistema Visual & GUI Apps
-        #- nwg-look
-        #- nwg-bar
+        - nwg-look
+        - nwg-bar
         - steam
         - zed
         - godot
@@ -81,7 +86,9 @@ modules:
         #- lxqt-session
 
         # Network & Hardware Management
-        - NetworkManager-wifi
+        #- NetworkManager-wifi
+        - iwd
+        - iwdctl
         - iw
         - bluez
 
@@ -98,10 +105,10 @@ modules:
         - wireplumber
 
         # Dependências de Runtime do Noctalia Shell
-        - sdbus-cpp
-        - libqalculate
-        - jemalloc
-        - noctalia
+        #- sdbus-cpp
+        #- libqalculate
+        #- jemalloc
+        #- noctalia
         - amixer
         - pamixer
         - brightnessctl
