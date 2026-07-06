@@ -36,6 +36,7 @@ modules:
 
         # Utilitários de Terminal & CLI
         - rofi-wayland
+        - j4-dmenu-desktop
         - grim
         - slurp
         - swappy
