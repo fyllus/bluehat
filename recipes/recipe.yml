@@ -92,4 +92,4 @@ modules:
 
   - type: script
     snippets:
-      - "greetd.sh"
+      - greetd.sh
