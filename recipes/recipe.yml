@@ -91,5 +91,5 @@ modules:
         - brightnessctl
 
   - type: script
-    snippets:
+    scripts:
       - greetd.sh
