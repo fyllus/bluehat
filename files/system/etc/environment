@@ -1,0 +1,4 @@
+ZEIT="/etc/sway"
+SCRIPTS="/usr/libexec/sway/scripts"
+
+PATH="$HOME/.local/bin:$PATH"

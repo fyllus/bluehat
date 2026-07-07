@@ -33,38 +33,50 @@ module-cpu() {
 module-battery() {
     local action="$1"
     case "$action" in
-       	
         --level)
-            local perc val icon status
+            local perc val icon idx
+            local lock_file="/tmp/battery_low.lock"
+            
             perc=$(bash "${BASH_SOURCE[0]}" battery)
             val="${perc%\%}"
             
             local norm=("󰁺" "󰁽" "󰁿" "󰂁" "󰁹")
             local plugged=("󰢜" "󰂇" "󰢝" "󰂊" "󰂅")
-            
-            if acpi -b | grep -qE 'Charging|Full|Plugged'; then 
-                if (( val < 10 ));  then icon="${plugged[0]}"
-                elif (( val < 25 )); then icon="${plugged[1]}"
-                elif (( val < 60 )); then icon="${plugged[2]}"
-                elif (( val < 80 )); then icon="${plugged[3]}"
-                else icon="${plugged[4]}"
-                fi
+
+            local -n icons
+            if acpi -b | grep -qE 'Charging|Full|Plugged'; then
+                icons=plugged
+                rm -f "$lock_file"
             else
-                if (( val < 10 ));  then icon="${norm[0]}"
-                elif (( val < 25 )); then icon="${norm[1]}"
-                elif (( val < 60 )); then icon="${norm[2]}"
-                elif (( val < 80 )); then icon="${norm[3]}"
-                else icon="${norm[4]}"
+                icons=norm
+            fi
+
+            if (( val < 10 )); then idx=0
+            elif (( val < 25 )); then idx=1
+            elif (( val < 60 )); then idx=2
+            elif (( val < 80 )); then idx=3
+            else                      idx=4
+            fi
+            
+            icon="${icons[$idx]}"
+
+            if [[ "$icons" == "norm" && (( val < 10 )) ]]; then
+                if [[ ! -f "$lock_file" ]]; then
+                    touch "$lock_file"
+                    notify-send -u critical "Battery" "You need to charge your device: $val%"
                 fi
+            elif [[ "$icons" == "norm" && (( val > 10 )) ]] && [[ -f "$lock_file" ]]; then
+                rm -f "$lock_file"
             fi
 
             printf "%s %s\n" "$icon" "$perc"
             ;;
-          *)
+         *)
             acpi -b | awk -F, '{split($2, cap, "%"); printf "%d%%\n", cap[1]}'
             ;;
     esac
 }
+
 main() {
     local mod="$1"
     shift
