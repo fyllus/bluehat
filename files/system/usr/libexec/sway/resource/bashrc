@@ -161,14 +161,13 @@ __build_ps1_vars() {
 alias exit="__context-exit"
 alias see="__context-see"
 alias cd="__context-cd"
-alias swayrun="__context-swayrun"
 alias rebase="__context-rebase"
 alias pybuild="python3 -m build"
 alias pypi="python3 -m twine upload --verbose dist"
-alias swayssh="/usr/libexec/scripts/ssh-config"
-alias swayfz="/usr/libexec/scripts/sway-fuzzy"
-alias swayctl="/usr/libexec/scripts/sway-control"
-alias swaywall="/usr/libexec/scripts/sway-background"
+alias swayssh="/usr/libexec/sway/scripts/ssh-config"
+alias swayfz="/usr/libexec/sway/scripts/sway-fuzzy"
+alias swayctl="/usr/libexec/sway/scripts/sway-control"
+alias swaywall="/usr/libexec/sway/scripts/sway-background"
 
 
 cd ~
