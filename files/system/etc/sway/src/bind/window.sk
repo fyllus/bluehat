@@ -28,10 +28,10 @@ set {
 }
 
 set {
-    
+
     $window_mode_toggle         $SELECT+Return
     $window_split_toggle        $SELECT+BackSpace
 }
 
 # CUSTOM KEYMAP OVERRIDE
-include $HOME/.window_keymap
+include $HOME/.config/sway/keymap/window.kb

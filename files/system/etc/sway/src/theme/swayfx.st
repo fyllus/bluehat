@@ -15,7 +15,7 @@ set {
     $swayfx_shadows_color #0000007F
 }
 
-include $HOME/.custom_theme_swayfx
+include $HOME/.config/sway/theme/*.swfx
 
 
 ### Appearance
@@ -43,8 +43,6 @@ for_window [class=".*"] opacity $swayfx_window_opacity
 layer_effects "swaybar" {
     blur            $swayfx_blur
     blur_xray       $swayfx_blur_xray
-    blur_passes     $swayfx_blur_passes
-    blur_radius     $swayfx_blur_radius
     shadows         $swayfx_shadows
     corner_radius  $swayfx_corner_radius
 }

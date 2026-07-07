@@ -9,4 +9,4 @@ set {
     $font_family        Terminess Nerd font
     $font_size          13
 }
-include $HOME/.custom_theme_define
+include $HOME/.config/sway/theme/*.def

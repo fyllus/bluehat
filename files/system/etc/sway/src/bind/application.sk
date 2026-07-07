@@ -30,4 +30,4 @@ set {
 }
 
 # CUSTOM KEYMAP OVERRIDE
-include $HOME/.application_keymap
+include $HOME/.config/sway/keymap/applications.kb

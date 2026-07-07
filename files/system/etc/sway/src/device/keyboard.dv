@@ -2,4 +2,4 @@ set {
     $keyboard_layout br
     $keyboard_variant abnt2
 }
-include $HOME/.config/sway/device/custom_keyboard_config.dv
+include $HOME/.config/sway/device/keyboard.dev

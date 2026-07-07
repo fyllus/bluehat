@@ -1,5 +1,5 @@
 
 include ./src/autostart.conf
-include ./src/bar.conf
-include ./src/theme.conf
-include ./src/binds.conf
+include ./src/swaybar.conf
+include ./src/theming.conf
+include ./src/keymapping.conf

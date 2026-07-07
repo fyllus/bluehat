@@ -15,17 +15,7 @@ set {
 
 # EXECUTE THEME UPDATE FROM GTK AND CREATE CUSTOM COLOR FROM IT
 
-exec touch $HOME/.config/sway/sway-colors-include.st
-exec touch $HOME/.config/rofi/rofi-colors-include.rasi
-exec touch $HOME/.config/waybar/waybar-colors-include.css
-exec touch $HOME/.config/foot/foot-colors-include.ini
-
-exec_always bash -ic "swayrun sway-theme --update --sway"
-exec_always bash -ic "swayrun sway-theme --update --rasi"
-exec_always bash -ic "swayrun sway-theme --update --waybar"
-exec_always bash -ic "swayrun sway-theme --update --foot"
-
-include $HOME/.config/sway/sway-colors-include.st
+include $HOME/.config/sway/theme/*.color
 
 
 set {
@@ -74,9 +64,9 @@ set  {
 	$bar_wsu_border 					$urgent_border
 	$bar_wsu_background					$urgent_background
 	$bar_wsu_text	 					$urgent_text
-	
-					
-	}	
+
+
+	}
 
 set {
 	$wmenu_bg $bar_wsi_background

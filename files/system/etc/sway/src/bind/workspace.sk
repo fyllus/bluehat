@@ -41,4 +41,4 @@ set {
 }
 
 # CUSTOM KEYMAP OVERRIDE
-include $HOME/.workspace_keymap
+include $HOME/.config/sway/keymap/workspace.kb
