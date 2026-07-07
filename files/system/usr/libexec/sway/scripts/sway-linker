@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+place_it() {
+    local object="$1"
+    local linker="$2"
+    local name="$(basename "$object")"
+    local target="$linker/$name"
+
+    if [ -e "$target" ]; then
+        rm -rf "$target.old"
+        mv "$target" "$target.old"
+    fi
+
+    ln -s "$object" "$target"
+}
+
+main() {
+
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo "Use: $0 <origin_dir> <target_dir>"
+        exit 1
+    fi
+
+    local from="$(realpath "$1")"
+    local to="$(realpath "$2")"
+
+    mkdir -p "$to"
+
+    for thing in "$from"/*; do
+        if [ -d "$thing" ] || ( [ -f "$thing" ] && [ "$thing" != "$SCRIPT_PATH" ] ); then
+            place_it "$thing" "$to"
+        fi
+    done
+}
+
+main "$@"

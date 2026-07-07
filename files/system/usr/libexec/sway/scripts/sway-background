@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+fzf-design() {
+    local colors_input=("$@")
+    local theme_string="fg:-1,bg:-1"
+
+    if [[ ${#colors_input[@]} -gt 0 ]]; then
+        theme_string=$(IFS=,; echo "${colors_input[*]}")
+    else
+        theme_string="fg:-1,bg:-1,hl:#81a1c1,fg+:#d8dee9,bg+:#3b4252,hl+:#81a1c1,info:#ebcb4b,prompt:#81a1c1,pointer:#b48ead,marker:#a3be8c,header:#5e81ac"
+    fi
+
+    local fzf_design=(
+        "--layout=reverse"
+        "--height=100%"
+        "--border=rounded"
+        "--margin=1,2"
+        "--padding=1"
+        "--info=inline"
+        "--header=Select your image.."
+        "--prompt=Search: "
+        "--pointer=▶"
+        "--marker=✓"
+    )
+    local fzf_behavior=(
+        "--cycle"
+        "--bind=ctrl-t:toggle-preview"
+        "--bind=pgup:preview-page-up"
+        "--bind=pgdn:preview-page-down"
+    )
+    local fzf_preview=(
+        "--preview=magick {} -resize \55${FZF_PREVIEW_COLUMNS}0x\55${FZF_PREVIEW_LINES}0\\> sixel:-"
+        "--preview-window=right:50%:border-left"
+    )
+    local fzf_theme=(
+        "--color=${theme_string}"
+    )
+
+    fzf_config=(
+        "${fzf_design[@]}"
+        "${fzf_behavior[@]}"
+        "${fzf_preview[@]}"
+        "${fzf_theme[@]}"
+    )
+}
+
+img_extension=(
+    -type f \(
+    -iname "*.jpg" -o
+    -iname "*.jpeg" -o
+    -iname "*.png" -o
+    -iname "*.webp" -o
+    -iname "*.gif"
+    \)
+)
+
+image_menu() {
+    local target_dir="$1"
+    shift
+
+    cd "$target_dir" || return 1
+
+    local fzf_config=()
+    fzf-design "$@"
+
+    local selected
+    selected=$(find . -maxdepth 1 "${img_extension[@]}" | sed 's|^\./||' | SHELL=/bin/bash fzf "${fzf_config[@]}")
+    mkdir -p $HOME/.config/sway
+
+    if [[ -f "$selected" ]]; then
+        local new="$PWD/$selected"
+        echo "set \$custom_wallpaper $new" > "$HOME/.config/sway/custom_theme_wallpaper.st"
+        swaymsg output "*" bg "$new" fill
+    fi
+}
+
+image_menu "$@" >> "$HOME/log.erros" 2>&1

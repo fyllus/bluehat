@@ -1,0 +1,44 @@
+include ./modifiers.sk
+
+# DEFAULT KEYMAP
+set {
+    $go_to_workspace_1                      $SUPER+1
+    $go_to_workspace_2                      $SUPER+2
+    $go_to_workspace_3                      $SUPER+3
+    $go_to_workspace_4                      $SUPER+4
+    $go_to_workspace_5                      $SUPER+5
+    $go_to_workspace_6                      $SUPER+6
+    $go_to_workspace_7                      $SUPER+7
+    $go_to_workspace_8                      $SUPER+8
+    $go_to_workspace_9                      $SUPER+9
+    $go_to_workspace_10                     $SUPER+0
+}
+
+set {
+    $move_window_to_workspace_1             $SUPER+Ctrl+1
+    $move_window_to_workspace_2             $SUPER+Ctrl+2
+    $move_window_to_workspace_3             $SUPER+Ctrl+3
+    $move_window_to_workspace_4             $SUPER+Ctrl+4
+    $move_window_to_workspace_5             $SUPER+Ctrl+5
+    $move_window_to_workspace_6             $SUPER+Ctrl+6
+    $move_window_to_workspace_7             $SUPER+Ctrl+7
+    $move_window_to_workspace_8             $SUPER+Ctrl+8
+    $move_window_to_workspace_9             $SUPER+Ctrl+9
+    $move_window_to_workspace_10            $SUPER+Ctrl+0
+}
+
+set {
+    $move_window_and_focus_to_workspace_1   Tab+1
+    $move_window_and_focus_to_workspace_2   Tab+2
+    $move_window_and_focus_to_workspace_3   Tab+3
+    $move_window_and_focus_to_workspace_4   Tab+4
+    $move_window_and_focus_to_workspace_5   Tab+5
+    $move_window_and_focus_to_workspace_6   Tab+6
+    $move_window_and_focus_to_workspace_7   Tab+7
+    $move_window_and_focus_to_workspace_8   Tab+8
+    $move_window_and_focus_to_workspace_9   Tab+9
+    $move_window_and_focus_to_workspace_10  Tab+0
+}
+
+# CUSTOM KEYMAP OVERRIDE
+include $HOME/.workspace_keymap

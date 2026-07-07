@@ -1,0 +1,37 @@
+include ./modifiers.sk
+
+# DEFAULT KEYMAP
+set {
+    $window_focus_left         $SUPER+Left
+    $window_focus_right        $SUPER+Right
+    $window_focus_down         $SUPER+Down
+    $window_focus_up           $SUPER+Up
+
+    $window_move_to_left       $SUPER+Ctrl+Left
+    $window_move_to_right      $SUPER+Ctrl+Right
+    $window_move_to_down       $SUPER+Ctrl+Down
+    $window_move_to_up         $SUPER+Ctrl+Up
+
+
+    $window_grow_width         $SELECT+Left
+    $window_shrink_width       $SELECT+Right
+    $window_grow_height        $SELECT+Up
+    $window_shrink_height      $SELECT+Down
+}
+
+set {
+    $window_to_scratch         $SUPER+Escape
+    $window_to_kill            $SELECT+Delete
+    $window_to_fullscreen      $SUPER+F11
+    $window_show_scratch       $SUPER+Tab
+    $window_toggle_float       $SUPER+Space
+}
+
+set {
+    
+    $window_mode_toggle         $SELECT+Return
+    $window_split_toggle        $SELECT+BackSpace
+}
+
+# CUSTOM KEYMAP OVERRIDE
+include $HOME/.window_keymap

@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=󰊓 Screenshot Fullscreen
+Exec=grim "$HOME/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+Terminal=false

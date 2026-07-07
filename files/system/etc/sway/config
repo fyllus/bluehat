@@ -1,0 +1,5 @@
+
+include ./src/autostart.conf
+include ./src/bar.conf
+include ./src/theme.conf
+include ./src/binds.conf

@@ -1,0 +1,1 @@
+include $HOME/.sway-vars

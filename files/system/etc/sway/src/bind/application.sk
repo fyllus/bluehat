@@ -1,0 +1,33 @@
+include ./modifiers.sk
+
+# DEFAULT KEYMAP
+set {
+    $call_application_a     $SUPER+a
+    $call_application_b     $SUPER+b
+    $call_application_c     $SUPER+c
+    $call_application_d     $SUPER+d
+    $call_application_e     $SUPER+e
+    $call_application_f     $SUPER+f
+    $call_application_g     $SUPER+g
+    $call_application_h     $SUPER+h
+    $call_application_i     $SUPER+i
+    $call_application_j     $SUPER+j
+    $call_application_l     $SUPER+l
+    $call_application_m     $SUPER+m
+    $call_application_n     $SUPER+n
+    $call_application_o     $SUPER+o
+    $call_application_p     $SUPER+p
+    $call_application_q     $SUPER+q
+    $call_application_r     $SUPER+r
+    $call_application_s     $SUPER+s
+    $call_application_u     $SUPER+u
+    $call_application_v     $SUPER+v
+    $call_application_x     $SUPER+x
+    $call_application_y     $SUPER+y
+    $call_application_z     $SUPER+z
+    $call_application_k     $SUPER+k
+    $call_application_w     $SUPER+w
+}
+
+# CUSTOM KEYMAP OVERRIDE
+include $HOME/.application_keymap

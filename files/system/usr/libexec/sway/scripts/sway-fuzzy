@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+MENUS="$(dirname {BASH_SOURCE[0]})/menus"
+get-desktops () {
+    local dirs=("$@")
+    [[ ${#dirs[@]} -eq 0 ]] && dirs=("/usr/share/applications" "$HOME/.local/share/applications")
+
+    for dir in "${dirs[@]}"; do
+        for file in "$dir"/*; do
+            if [[ -f "$file" && "$file" =~ \.desktop$ ]]; then
+                printf '%s\n' "$file"
+            fi
+        done
+    done
+}
+
+get-key () {
+    local file="$1"
+    local key="Name"
+    [[ -n "$2" ]] && key="$2"    
+    grep -hm 1 "^$key=" "$file" | cut -d'=' -f2-  
+}
+
+get-applications () {
+    IFS=$'\n'
+    for desktop in $(get-desktops "$@"); do
+        get-key "$desktop" "Name"        
+    done
+}
+
+get-executable () {
+    local choosen="$1"
+    shift
+    [[ -z "$choosen" ]] && return
+    IFS=$'\n'
+    for desktop in $(get-desktops "$@"); do
+         if [[ "$(get-key "$desktop" "Name")" == "$choosen" ]]; then
+             printf '%s|%s\n' "$(get-key "$desktop" "Exec")" "$(get-key "$desktop" "Terminal")"
+             break
+         fi    
+    done
+}
+
+get-scratchpad-windows () {
+    swaymsg -t get_tree | jq -r '
+        .. | select(.name? == "__i3_scratch") | recurse(.nodes[], .floating_nodes[]) | select(.type? == "floating_con") | "\(.id) - \(.name)"
+    ' | sed '/^\s*$/d'
+}
+
+run-desktop-menu () {
+    local wmenu_args=("$@")
+    local choosen data cmd terminal
+
+    choosen=$(get-applications "${target_dirs[@]}" | wmenu "${wmenu_args[@]}")
+    [[ -z "$choosen" ]] && return
+
+    data=$(get-executable "$choosen" "${target_dirs[@]}")
+    cmd=$(echo "$data" | cut -d'|' -f1)
+    terminal=$(echo "$data" | cut -d'|' -f2)
+
+    if [[ -n "$cmd" ]]; then
+        cmd=$(echo "$cmd" | sed 's/%[fFuU]//g')
+        if [[ "$terminal" == "true" ]]; then
+            foot $cmd
+        else
+            $cmd
+        fi
+    fi
+}
+
+wmenu-helper () {
+    local mode="$1"
+    shift
+
+    local choosen target_dirs=()
+
+    case "$mode" in
+        "power")
+            target_dirs=("$MENUS/power")
+            run-desktop-menu "$@"
+            ;;
+        "screenshot")
+            target_dirs=("$MENUS/screenshot")
+            run-desktop-menu "$@"
+            ;;
+        "scratchpad")
+            choosen=$(get-scratchpad-windows | wmenu "$@")
+            [[ -z "$choosen" ]] && return
+            
+            local win_id="${choosen%% *}"
+            if [[ "$win_id" =~ ^[0-9]+$ ]]; then
+                swaymsg "[con_id=$win_id] scratchpad show"
+            fi
+            ;;
+        "apps"|*)
+            run-desktop-menu "$@"
+            ;;
+            
+    esac
+}
+
+wmenu-helper "$@"

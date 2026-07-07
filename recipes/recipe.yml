@@ -4,7 +4,7 @@ name: bluehat
 description: bluehat, not red.
 
 base-image: ghcr.io/ublue-os/base-main
-image-version: latest 
+image-version: latest
 
 modules:
   - type: files
@@ -15,14 +15,14 @@ modules:
   - type: dnf
     repos:
       copr:
-        - swayfx/swayfx        
+        - swayfx/swayfx
         - tofik/nwg-shell
         - lihaohong/yazi
-        - lionheartp/Hyprland 
+        #- lionheartp/Hyprland
         - che/zed
       files:
         - https://repo.librewolf.net/librewolf.repo
-    
+
     install:
       packages:
         # Core Dev & Container Stack
@@ -32,17 +32,19 @@ modules:
         - openssh-clients
 
         # Utilitários de Terminal & CLI
+        - greetd
+        - tuigreet
         - rofi-wayland
         - j4-dmenu-desktop
         - grim
-        - slurp        
+        - slurp
         - yazi
         - dunst
         - micro
         - btop
         - fzf
         - chafa
-        - ImageMagick   
+        - ImageMagick
         - ffmpegthumbnailer
         - poppler-utils
         - 7zip
@@ -73,12 +75,12 @@ modules:
 
         # Core LXQt (Arranque e Serviços)
         - lxqt-policykit
-        
+
         # Network & Hardware Management
-        - NetworkManager-wifi        
+        - NetworkManager-wifi
         - iw
         - bluez
-               
+
         # Dependências de Runtime do Noctalia Shell
         # - sdbus-cpp
         # - libqalculate
@@ -88,4 +90,6 @@ modules:
         - pamixer
         - brightnessctl
 
-  
+  - type: script
+    snippets:
+      - "enable-greetd.sh"

@@ -1,0 +1,33 @@
+include ./modifiers.sk
+
+# DEFAULT KEYMAP
+set {
+    $call_total_reload              F7
+    $call_default_term              $SUPER+t
+    $call_default_files				Menu
+    $call_default_wallpaper			$SUPER+F1
+    $call_default_menu              $SUPER+Return
+}
+
+set {
+    $system_raise_volume            XF86AudioRaiseVolume
+    $system_lower_volume            XF86AudioLowerVolume
+    $system_mute_volume             XF86AudioMute
+
+    $system_display_light_raise     XF86MonBrightnessUp
+    $system_display_light_lower     XF86MonBrightnessDown
+    $system_power_options_call      XF86PowerOff
+    $system_full_lock               $SELECT+BracketRight
+
+}
+
+floating_modifier $SUPER normal
+
+set {
+    $print_mode_default             Print
+    $print_mode_ctrl                Print+Ctrl
+    $print_mode_alt                 Print+$ALT_LEFT
+}
+
+#CUSTOM KEYMAP OVERRIDE
+include $HOME/.system_keymap

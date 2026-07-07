@@ -1,0 +1,11 @@
+
+# DEFAULT MODIFIER KEYMAP
+set {
+    $SELECT    Mod2
+    $SUPER     Mod4
+    $ALT_LEFT  Mod1
+    $ALT_RIGHT Mod5
+}
+
+# CUSTOM MODIFIER KEYMAP
+include $HOME/.modifier_keymap

@@ -1,0 +1,233 @@
+#!/usr/bin/env bash
+# =====================================================================
+# MODULES XTUBE
+# =====================================================================
+
+alias exit="__context-exit"
+alias see="__context-see"
+alias cd="__context-cd"
+alias swayrun="__context-swayrun"
+alias rebase="__context-rebase"
+export MOZ_ENABLE_WAYLAND=1
+
+
+export SCRIPTS="/usr/libexec/sway/scripts"
+export ZEIT="/etc/sway"
+
+
+__context-rebase() {
+	local action="$1"
+
+	case "$action" in
+		-u|--unverified)
+			if [ -e "$PWD/rebase-u.txt" ];then
+				echo "$(rebase-u.txt)"
+			fi
+			;;
+		-s|--signed)
+			if [ -e "$PWD/rebase-s.txt" ];then
+				echo "$(rebase-s.txt)"
+			fi
+			;;
+		*)
+			if [ -e "$PWD/rebase-t.txt" ];then
+				echo "$(rebase-t.txt)"
+			fi
+			;;
+	esac
+}
+
+__context-swayrun() {
+    local scripts="$ZEIT/default/scripts"
+    local action="$1"
+    shift
+
+    case "$action" in
+        *)
+            local script="$scripts/$action"
+            [ -f "$script" ] && chmod +x "$script"
+            $script $@
+        ;;
+    esac
+}
+__context-cd() {
+    builtin cd "$@" || return 1
+
+    if [ -f ".venv/bin/activate" ]; then
+        [ -n "$VIRTUAL_ENV" ] && [ "$VIRTUAL_ENV" != "$(pwd)/.venv" ] && deactivate
+        [ -z "$VIRTUAL_ENV" ] && source .venv/bin/activate
+    elif [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
+}
+
+__context-exit() {
+    [ -n "$VIRTUAL_ENV" ] && deactivate
+    builtin exit
+}
+
+__context-see() {
+    if command -v bat >/dev/null 2>&1; then
+        bat "$@"
+    else
+        cat "$@"
+    fi
+}
+
+__msg() {
+
+    local level="$1"
+    local title="$2"
+    local text="$3"
+
+    local level_esc="$4"
+    local title_esc="$5"
+    local text_esc="$6"
+
+    local time="$(date '+%Y-%m-%d %H:%M')"
+
+    local msg
+    local flag
+    local clr
+
+    case "$level" in
+        info)
+            flag="$(ansi_esc "(INFO)" ${level_esc:-Ny1})"
+            clr="${title_esc:-Nc1}"
+        ;;
+        ok)
+            flag="$(ansi_esc "(OK)" ${level_esc:-Nb1})"
+            clr="${title_esc:-Ny1}"
+        ;;
+        warn)
+            flag="$(ansi_esc "(WARN)" ${level_esc:-m135})"
+            clr="${title_esc:-b135}"
+        ;;
+        error)
+            flag="$(ansi_esc "(ERROR)" ${level_esc:-r135})"
+            clr="${title_esc:-y135}"
+        ;;
+        bip)
+            flag="$(ansi_esc "(BIP)" ${level_esc:-Nw1})"
+            clr="${title_esc:-Ng1}"
+        ;;
+        *)
+            flag="$(ansi_esc "[ $level ]" ${level_esc:-Ny15})"
+            clr="${title_esc:-Nb1}"
+        ;;
+
+    esac
+
+    msg="$flag: $( ansi_esc " $title ->>" $clr ) \n\n $(ansi_esc "$text" ${text_esc:--})"
+
+    echo -e "\n $msg"
+    echo -e "\n at < $(ansi_esc "$time" ${level_esc:-$clr}) > \n"
+
+}
+
+__flag_color() {
+
+    local char="$1"
+    case "$char" in
+        R|r|1) echo "1" ;; # Red [BACKGROUND | foregroung], bold
+        G|g|2) echo "2" ;; # Green [BACKGROUND | foregroung], bright
+        Y|y|3) echo "3" ;; # Yellow [BACKGROUND | foregroung], italic
+        B|b|4) echo "4" ;; # Blue [BACKGROUND | foregroung], underline
+        M|m|5) echo "5" ;; # Magenta [BACKGROUND | foregroung], flik
+        C|c|6) echo "6" ;; # Cyan [BACKGROUND | foregroung], hide
+        W|w|7) echo "7" ;; # White [BACKGROUND | foregroung], invert
+        N|n|0) echo "0" ;; # Black [BACKGROUND | foregroung], reset
+        *)     echo "9" ;; # color default
+    esac
+}
+
+__style_parser() {
+
+    local style="$1"
+    local esc="\033["
+    local tail="m"
+    local codes=()
+
+    # Parsing style code to ANSI_ESC code
+    for (( i=0; i<${#style}; i++ )); do
+        local char="${style:i:1}"
+        local mod=""
+
+        if [[ "$char" =~ [0-9] ]]; then
+            # (1=Bold, 2=Bright, 3=Italic, 4=Underline, 5=Flik, 6=Hide, 7=Invert, 0=Reset)
+            codes+=("$char")
+        elif [[ "$char" =~ [[:upper:]] ]]; then
+            # Upper: Background ( [R]ed, [G]reen, [Y]ellow, [B]lue,[M]agenta, [C]yan, [W]hite and [N] for BLACK )
+            codes+=("4$(__flag_color "$char")")
+        elif [[ "$char" =~ [[:lower:]] ]]; then
+            # Lower: Foreground ([R]ed, [G]reen, [Y]ellow, [B]lue,[M]agenta, [C]yan, [W]hite and [N] for BLACK )
+            codes+=("3$(__flag_color "$char")")
+        fi
+    done
+
+    # Compile to ANSI_ESC format ( ex. \033[0m )
+    local joint_codes
+    joint_codes=$(IFS=';'; echo "${codes[*]}")
+
+    echo -ne "${esc}${joint_codes}${tail}"
+}
+
+__multiply() {
+    printf -v line "%${1}" ""
+    echo "${line// /$2}"
+}
+__git_info() {
+    local branch status=""
+    branch=$(git branch --show-current 2>/dev/null)
+    [ -z "$branch" ] && return
+
+    [ -n "$(git status --porcelain 2>/dev/null)" ] && status="*"
+    echo "  $(ansi_esc "$branch$status" -r1)"
+}
+
+__build_ps1_vars() {
+    local msg="\n 📂 $(ansi_esc "\w" -c1)"
+
+    if [ -n "$VIRTUAL_ENV" ]; then
+        local venv_name="${VIRTUAL_ENV_PROMPT:-NONE}"
+        msg+=" $(ansi_esc "(${venv_name// /})" -g1)"
+    fi
+
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 && msg+="$(__git_info)"
+
+    PS1="${msg}\n ❯ "
+}
+
+# =================================================================================================
+# COMMANDS XTUBE
+# =================================================================================================
+
+# esc char styling
+ansi_esc() {
+
+    local text="$1"
+    local style_code="$2"
+    local reset="\033[0m"
+
+    local _esc
+    _esc=$(__style_parser "$style_code")
+
+    echo -e "${_esc}${text}${reset}"
+}
+
+
+# line creator
+line() {
+
+    local len="${1:-100}"
+    local char="${2:-*}"
+    local _esc="${3:--}"
+    echo -e "$(ansi_esc "$(__multiply "$len" "$char")" $_esc)"
+}
+
+export PROMPT_COMMAND=__build_ps1_vars
+
+alias pybuild="python3 -m build"
+alias pypi="python3 -m twine upload --verbose dist/*"
+
+export PATH="$HOME/.local/bin:$PATH"
