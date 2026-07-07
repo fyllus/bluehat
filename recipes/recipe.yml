@@ -18,7 +18,6 @@ modules:
         - swayfx/swayfx
         - tofik/nwg-shell
         - lihaohong/yazi
-        #- lionheartp/Hyprland
         - che/zed
       files:
         - https://repo.librewolf.net/librewolf.repo
@@ -31,11 +30,9 @@ modules:
         - podman
         - openssh-clients
 
-        # Utilitários de Terminal & CLI
+        # Terminal & CLI
         - greetd
         - tuigreet
-        - rofi-wayland
-        - j4-dmenu-desktop
         - grim
         - slurp
         - yazi
@@ -48,19 +45,16 @@ modules:
         - ffmpegthumbnailer
         - poppler-utils
         - 7zip
-        - tar
         - i3blocks
         - lm_sensors
         - acpi
-        - xz
-        - unzip
 
         # Window Manager & Display Server
         - swayfx
         - gtklock
         - xorg-x11-server-Xwayland
 
-        # Ecossistema Visual & GUI Apps
+        # Visual & GUI Apps
         - nwg-look
         - nwg-bar
         - steam
@@ -68,24 +62,18 @@ modules:
         - godot
         - librewolf
 
-        # Fontes Essenciais
+        # Fonts
         - google-noto-sans-fonts
         - google-noto-fonts-common
         - fontawesome-fonts
 
-        # Core LXQt (Arranque e Serviços)
+        # Core LXQt
         - lxqt-policykit
 
         # Network & Hardware Management
         - NetworkManager-wifi
         - iw
         - bluez
-
-        # Dependências de Runtime do Noctalia Shell
-        # - sdbus-cpp
-        # - libqalculate
-        # - jemalloc
-        # - noctalia
         - amixer
         - pamixer
         - brightnessctl
