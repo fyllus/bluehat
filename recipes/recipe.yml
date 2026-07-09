@@ -15,6 +15,7 @@ modules:
   - type: dnf
     repos:
       copr:
+        - erikreider/SwayNotificationCenter
         - swayfx/swayfx
         - tofik/nwg-shell
         - lihaohong/yazi
@@ -31,7 +32,7 @@ modules:
         - openssh-clients
 
         # Terminal & CLI
-        
+        - SwayNotificationCenter
         - greetd
         - tuigreet
         - grim
