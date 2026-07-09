@@ -2,7 +2,11 @@
 MENUS="$(dirname {BASH_SOURCE[0]})/menus"
 get-desktops () {
     local dirs=("$@")
-    [[ ${#dirs[@]} -eq 0 ]] && dirs=("/usr/share/applications" "$HOME/.local/share/applications")
+    [[ ${#dirs[@]} -eq 0 ]] && dirs=(
+                                    "/usr/share/applications"
+                                    "$HOME/.local/share/applications"
+                                    "/var/lib/flatpak/exports/share/applications/"
+    )
 
     for dir in "${dirs[@]}"; do
         for file in "$dir"/*; do
@@ -16,14 +20,14 @@ get-desktops () {
 get-key () {
     local file="$1"
     local key="Name"
-    [[ -n "$2" ]] && key="$2"    
-    grep -hm 1 "^$key=" "$file" | cut -d'=' -f2-  
+    [[ -n "$2" ]] && key="$2"
+    grep -hm 1 "^$key=" "$file" | cut -d'=' -f2-
 }
 
 get-applications () {
     IFS=$'\n'
     for desktop in $(get-desktops "$@"); do
-        get-key "$desktop" "Name"        
+        get-key "$desktop" "Name"
     done
 }
 
@@ -36,7 +40,7 @@ get-executable () {
          if [[ "$(get-key "$desktop" "Name")" == "$choosen" ]]; then
              printf '%s|%s\n' "$(get-key "$desktop" "Exec")" "$(get-key "$desktop" "Terminal")"
              break
-         fi    
+         fi
     done
 }
 
@@ -60,9 +64,9 @@ run-desktop-menu () {
     if [[ -n "$cmd" ]]; then
         cmd=$(echo "$cmd" | sed 's/%[fFuU]//g')
         if [[ "$terminal" == "true" ]]; then
-            foot $cmd
+            foot eval $cmd
         else
-            $cmd
+           eval $cmd
         fi
     fi
 }
@@ -85,7 +89,7 @@ wmenu-helper () {
         "scratchpad")
             choosen=$(get-scratchpad-windows | wmenu "$@")
             [[ -z "$choosen" ]] && return
-            
+
             local win_id="${choosen%% *}"
             if [[ "$win_id" =~ ^[0-9]+$ ]]; then
                 swaymsg "[con_id=$win_id] scratchpad show"
@@ -94,7 +98,7 @@ wmenu-helper () {
         "apps"|*)
             run-desktop-menu "$@"
             ;;
-            
+
     esac
 }
 
