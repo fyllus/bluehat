@@ -31,7 +31,7 @@ modules:
         - openssh-clients
 
         # Terminal & CLI
-        - waylock
+        
         - greetd
         - tuigreet
         - grim
