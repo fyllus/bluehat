@@ -1,6 +1,50 @@
 #!/usr/bin/env bash
-MENUS="$(dirname {BASH_SOURCE[0]})/menus"
+MENUS="$(dirname "$SCRIPTS")/menus"
+
+
+get-key () {
+    local file="$1"
+    local key="Name"
+    [[ -n "$2" ]] && key="$2"
+    grep -hm 1 "^$key=" "$file" | cut -d'=' -f2-
+}
+
+
+init-desktop-cache () {
+    if ! [[ -f "$HOME/.cache/desktops.cache" ]]; then
+        mkdir -p "$HOME/.cache"
+        find / -name "*.desktop" 2>/dev/null | while read -r path; do
+            if [[ -f "$path" ]]\
+            && ! [[ "$path" =~ /menus/.*\.desktop$ ]]\
+            && ! [[ "$path" =~ /autostart/.*\.desktop$ ]]\
+            && ! [[ "$path" =~ /sysroot/.*\.desktop$ ]]; then
+                
+                local filename=$(basename "$path")
+                
+                if [[ -f /tmp/.desktops.tmp ]] && grep -qF "/$filename" /tmp/.desktops.tmp; then
+                    continue
+                fi
+
+                local executable
+                executable=$(get-key "$path" "Exec" | awk '{print $1}')
+                if [[ -n "$executable" ]] && which "$executable" &>/dev/null; then
+                    echo "$path" >> /tmp/.desktops.tmp
+                fi
+            fi
+        done
+        [[ -f /tmp/.desktops.tmp ]] && mv /tmp/.desktops.tmp "$HOME/.cache/desktops.cache"
+    fi
+}
+
+init-desktop-cache
+
 get-desktops () {
+    
+    if [[ "$1" == "--all" ]]; then
+        [[ -f "$HOME/.cache/desktops.cache" ]] && cat "$HOME/.cache/desktops.cache"
+        return 0
+    fi
+
     local dirs=("$@")
     [[ ${#dirs[@]} -eq 0 ]] && dirs=(
                                     "/usr/share/applications"
@@ -15,13 +59,6 @@ get-desktops () {
             fi
         done
     done
-}
-
-get-key () {
-    local file="$1"
-    local key="Name"
-    [[ -n "$2" ]] && key="$2"
-    grep -hm 1 "^$key=" "$file" | cut -d'=' -f2-
 }
 
 get-applications () {
@@ -75,7 +112,7 @@ wmenu-helper () {
     local mode="$1"
     shift
 
-    local choosen target_dirs=()
+    target_dirs=()
 
     case "$mode" in
         "power")
@@ -87,6 +124,7 @@ wmenu-helper () {
             run-desktop-menu "$@"
             ;;
         "scratchpad")
+            local choosen
             choosen=$(get-scratchpad-windows | wmenu "$@")
             [[ -z "$choosen" ]] && return
 
@@ -94,6 +132,10 @@ wmenu-helper () {
             if [[ "$win_id" =~ ^[0-9]+$ ]]; then
                 swaymsg "[con_id=$win_id] scratchpad show"
             fi
+            ;;
+        "all")
+            target_dirs=("--all")
+            run-desktop-menu "$@"
             ;;
         "apps"|*)
             run-desktop-menu "$@"
