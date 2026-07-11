@@ -46,6 +46,7 @@ if [ -z "$BASHRCSOURCED" ]; then
     fi
 
     if [ -f /usr/libexec/sway/resource/bashrc ]; then
-        source /usr/libexec/sway/resource/bashrc
+    	export SOURCE_TERM="/usr/libexec/sway/resource/bashrc"
+        source $SOURCE_TERM
     fi
 fi
