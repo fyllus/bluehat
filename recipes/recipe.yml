@@ -58,9 +58,9 @@ modules:
 
         # Visual & GUI Apps
         - nwg-look
-        - nwg-bar
         - steam
         - zed
+        - gimp
         - godot
         - librewolf
 
@@ -76,7 +76,6 @@ modules:
         - NetworkManager-wifi
         - iw
         - bluez
-        - amixer
         - pamixer
         - brightnessctl
 
