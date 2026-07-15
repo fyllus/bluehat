@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# This script is a helper for menu app using WMENU. It's high performance way use this to pre-compile
+# and resolve apps. Use .desktop requires complex parsing using python libs or other parsers for .desktop
+# The next step to optimize this, is write in some compiled lang, as c or rust.
+
+CACHE="$HOME/.cache/apps"
+
+get-key () {
+    grep -hm 1 "^$1=" "$2" | cut -d'=' -f2-
+}
+
+# 1. Collect default path from XDG_DATA_DIRS
+IFS=':' read -r -a xdg_dirs <<< "$XDG_DATA_DIRS"
+search_paths=()
+for x_dir in "${xdg_dirs[@]}"; do
+    [[ -d "$x_dir/applications" ]] && search_paths+=("$x_dir/applications")
+done
+
+# 2. Add common path out of default
+extra_paths=(
+    "$HOME/.local/share/applications"
+    "$HOME/.local/share/flatpak"
+    "/var/lib/flatpak"
+    "/var/lib/snapd/desktop"
+    "$HOME/Applications"
+    "$HOME/.nix-profile/share/applications"
+)
+for path in "${extra_paths[@]}"; do
+    [[ -d "$path" ]] && search_paths+=("$path")
+done
+
+finder-m () {
+    local out_dir="$1"
+    shift
+    local selected_paths=("$@")
+
+    rm -rf "$out_dir" && mkdir -p "$out_dir"
+
+    # 3. Run find on selected paths
+    find "${selected_paths[@]}" -type f -name "*.desktop" 2>/dev/null | while read -r path; do
+        [[ "$path" =~ /(menus|autostart|sysroot)/ ]] && continue
+
+        name=$(get-key "Name" "$path")
+        run=$(get-key "Exec" "$path")
+        [[ -z "$name" || -z "$run" ]] && continue
+
+        executable=$(echo "$run" | awk '{print $1}')
+
+        # Relative path resolve
+        if which "$executable" &>/dev/null; then
+            terminal=$(get-key "Terminal" "$path")
+            cmd=$(echo "$run" | sed 's/%[fFuU]//g')
+            escaped_name=$(echo "$name" | sed 's/[^[:alnum:]]/_/g')
+            target_script="$out_dir/$name"
+
+            echo "#!/bin/sh" > "$target_script"
+            if [[ "$terminal" == "true" ]]; then
+                echo "exec systemd-run --user --scope --slice=apps.slice --unit=app-$escaped_name-\$\$ foot -e $cmd" >> "$target_script"
+            else
+                echo "exec systemd-run --user --scope --slice=apps.slice --unit=app-$escaped_name-\$\$ $cmd" >> "$target_script"
+            fi
+            chmod +x "$target_script"
+        fi
+    done
+}
+
+# Parse custom options (-i for input directory, -o for output directory)
+custom_in=""
+custom_out=""
+
+while getopts "i:o:" opt; do
+    case "$opt" in
+        i) custom_in="$OPTARG" ;;
+        o) custom_out="$OPTARG" ;;
+        *) exit 1 ;;
+    esac
+done
+
+# Resolve final output path
+final_out="${custom_out:-$CACHE}"
+
+# Resolve final input paths
+if [[ -n "$custom_in" ]]; then
+    final_in=("$custom_in")
+else
+    final_in=("${search_paths[@]}")
+fi
+
+finder-m "$final_out" "${final_in[@]}"

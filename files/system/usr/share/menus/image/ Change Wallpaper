@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+[[ -d "$WALLPAPERS" ]] && exec sway-wall $WALLPAPERS

@@ -1,5 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=󰩬 Screenshot Selected Area
-Exec=grim -g "$(slurp)" "$HOME/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
-Terminal=false

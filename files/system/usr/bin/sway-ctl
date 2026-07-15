@@ -12,7 +12,7 @@ module-time() {
 module-memory() {
     local action="$1"
     case "$action" in
-        --perc-usage) 
+        --perc-usage)
             free | awk '/^Mem:/ {printf "  %.0f%%\n", $3/$2 * 100}'
             ;;
     esac
@@ -36,10 +36,10 @@ module-battery() {
         --level)
             local perc val icon idx
             local lock_file="/tmp/battery_low.lock"
-            
-            perc=$(bash "${BASH_SOURCE[0]}" battery)
+
+            perc=$(bash "${BASH_SOURCE[0]}" get battery)
             val="${perc%\%}"
-            
+
             local norm=("󰁺" "󰁽" "󰁿" "󰂁" "󰁹")
             local plugged=("󰢜" "󰂇" "󰢝" "󰂊" "󰂅")
 
@@ -57,7 +57,7 @@ module-battery() {
             elif (( val < 80 )); then idx=3
             else                      idx=4
             fi
-            
+
             icon="${icons[$idx]}"
 
             if [[ "$icons" == "norm" && (( val < 10 )) ]]; then
@@ -76,8 +76,39 @@ module-battery() {
             ;;
     esac
 }
+idle-toggle () {
 
-main() {
+    # Timeouts (in seconds)
+    local stage1=300 # Low brightness
+    local stage2=600 # Lockscreen
+    local stage3=900 # Display off
+
+    # Commands
+    local set_lock="gtklock -d"
+    local set_display_on="(swaymsg 'output * power on' && brightnessctl set 5%) 2>/dev/null "
+    local set_display_off="(brightnessctl -s && brightnessctl set 0% && swaymsg 'output * power off') 2>/dev/null"
+
+    # Toggle execution
+    if pgrep -f "swayidle" >/dev/null; then
+        pkill -f swayidle
+        notify-send "SwayIdle" "Idle/Lock desligado" -t 600
+    else
+        # Arguments array to preserve tokenization without eval
+        local swayidle_args=(
+            timeout "$stage1" "(brightnessctl -s && brightnessctl set 1%) 2>/dev/null"
+            resume "$set_display_on"
+            timeout "$stage2" "$set_lock"
+            timeout "$stage3" "$set_display_off"
+            before-sleep "$set_lock"
+        )
+
+        (swayidle -w "${swayidle_args[@]}") &
+
+        notify-send "SwayIdle" "Idle/Lock ativado" -t 600
+    fi
+
+}
+get-info() {
     local mod="$1"
     shift
 
@@ -89,4 +120,29 @@ main() {
     esac
 }
 
+set-info () {
+    local mod="$1"
+    shift
+    case "$mod" in
+        idle-toggle)
+            idle-toggle
+            ;;
+    esac
+}
+
+
+
+
+main () {
+    local action="$1"
+    shift
+    case "$action" in
+        get)
+            get-info $@
+            ;;
+        set)
+            set-info $@
+            ;;
+    esac
+}
 main "$@"

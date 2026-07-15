@@ -1,2 +1,2 @@
-set $custom_wallpaper /usr/share/default_wallpaper.png
+set $custom_wallpaper $BLUEHAT/src/theme/default_wallpaper.png
 include $HOME/.config/sway/custom_theme_wallpaper.st

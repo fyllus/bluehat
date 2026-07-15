@@ -30,8 +30,7 @@ modules:
         - podman
         - openssh-clients
 
-        # Terminal & CLI
-        
+        # Terminal & CLI        
         - greetd
         - tuigreet
         - grim

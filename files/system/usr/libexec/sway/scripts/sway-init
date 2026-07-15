@@ -11,3 +11,5 @@ if ! pgrep -x dunst >/dev/null; then
     killall -9 dunst 2>/dev/null
     dunst &>/dev/null & disown
 fi
+
+bash $SCRIPTS/sway-apps-compile

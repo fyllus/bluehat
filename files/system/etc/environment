@@ -1,4 +1,5 @@
-ZEIT="/etc/sway"
+BLUEHAT="/etc/sway"
 SCRIPTS="/usr/libexec/sway/scripts"
+WALLPAPERS="$HOME/Pictures/wallpaper"
 
 PATH="$HOME/.local/bin:$PATH"
