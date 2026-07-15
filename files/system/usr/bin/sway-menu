@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# This script is the front-end menu helper using WMENU.
+# It handles different modes (apps, screenshot, powermenu, scratchpad)
+# and forwards arguments directly to wmenu.
+
+MENUS="/usr/share/menus"
+CACHE="$HOME/.cache/apps"
+
+mode-scratchpad-windows () {
+    swaymsg -t get_tree | jq -r '
+        .. | select(.name? == "__i3_scratch") | recurse(.nodes[], .floating_nodes[]) | select(.type? == "floating_con") | "\(.id) - \(.name)"
+    ' | sed '/^\s*$/d'
+}
+
+main () {
+    local mode="$1"
+    local choosen
+    shift # Remove mode from arguments, leaving only wmenu_args
+
+    case "$mode" in
+        apps)
+            if [[ ! -d "$CACHE" ]]; then
+                # Run compiler script if cache does not exist
+                bash "$SCRIPTS/sway-menu-compile"
+            fi
+            choosen=$(ls "$CACHE" | wmenu "$@")
+            [[ -n "$choosen" ]] && exec bash "$CACHE/$choosen"
+            ;;
+        image|power)
+            [[ ! -d "$MENUS/$mode" ]] && return 1
+            choosen=$(ls "$MENUS/$mode" | wmenu "$@")
+            [[ -n "$choosen" ]] && exec bash "$MENUS/$mode/$choosen"
+            ;;
+        scratchpad)
+            choosen=$(mode-scratchpad-windows | wmenu "$@")
+            [[ -z "$choosen" ]] && return 0
+
+            local win_id="${choosen%% *}"
+            if [[ "$win_id" =~ ^[0-9]+$ ]]; then
+                swaymsg "[con_id=$win_id] scratchpad show"
+            fi
+            ;;
+    esac
+}
+
+main "$@"

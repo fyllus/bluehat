@@ -1,21 +1,21 @@
-include $ZEIT/src/theme/color.st
-include $ZEIT/src/theme/define.st
-include $ZEIT/src/var/paths.sv
+include $BLUEHAT/src/theme/color.st
+include $BLUEHAT/src/theme/define.st
+include $BLUEHAT/src/var/paths.sv
 
 set {
-	$__SWAY_FUZZY bash $SCRIPTS/sway-fuzzy
+	$__SWAY_FUZZY sway-menu
 
 	$__MENU_ARGS -i -f "$font_family $font_size" -N "$wmenu_bg" -n "$wmenu_fg" -S "$wmenu_BG" -s "$wmenu_FG"
-	
+
 	$__WMENU $__SWAY_FUZZY apps $__MENU_ARGS
 
-	$__POFF $__SWAY_FUZZY power $__MENU_ARGS 
+	$__POFF $__SWAY_FUZZY power $__MENU_ARGS
 
 	$__SCRATCH $__SWAY_FUZZY scratchpad $__MENU_ARGS
 
 	$__SCREENSHOT $__SWAY_FUZZY screenshot $__MENU_ARGS
 
-	$__BGSELEC bash $SCRIPTS/sway-background $PICTURES/wallpaper \
+	$__BGSELEC sway-wall $PICTURES/wallpaper \
 		"bg+:$wmenu_BG" \
 	    "fg+:$wmenu_bg" \
 	    "bg:-1" \
@@ -25,7 +25,7 @@ set {
 	    "pointer:$focused_border" \
 	    "marker:$focused_border" \
 	    "border:$unfocused_border" \
-	    "header:$focused_border"		
+	    "header:$focused_border"
     $BASH   exec bash -ic
 
     # DEFAULT POWER MENU CONFIG
