@@ -1,5 +1,6 @@
 BLUEHAT="/etc/sway"
 SCRIPTS="/usr/libexec/sway/scripts"
 WALLPAPERS="$HOME/Pictures/wallpaper"
-
+USR_MENUS="usr/share/menus"
+HOME_MENUS="$HOME/menus"
 PATH="$HOME/.local/bin:$PATH"

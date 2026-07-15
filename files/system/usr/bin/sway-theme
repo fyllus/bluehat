@@ -11,7 +11,6 @@ CONFIG = Path.home() / ".config"
 
 
 def get_gtk_theme() -> str:
-
     try:
         res = subprocess.run(
             ["gsettings", "get", "org.gnome.desktop.interface", "gtk-theme"],
@@ -25,7 +24,6 @@ def get_gtk_theme() -> str:
 
 
 def locate_gtk_css(theme_name: str) -> list[Path]:
-
     search_paths = [
         Path.home() / ".themes" / theme_name / "gtk-4.0" / "gtk.css",
         Path.home() / ".themes" / theme_name / "gtk-3.0" / "gtk.css",
@@ -41,7 +39,6 @@ class ColorType:
         self.r, self.g, self.b, self.a = self._parse(value.strip())
 
     def _parse(self, val: str) -> tuple:
-
         if val.startswith("#"):
             c = val[1:]
             if len(c) in (3, 4):
@@ -61,7 +58,6 @@ class ColorType:
         return 0, 0, 0, 1.0
 
     def to(self, form="hex") -> str:
-
         if form == "hex":
             return f"#{self.r:02x}{self.g:02x}{self.b:02x}"
         if form == "alpha_hex":
@@ -85,17 +81,18 @@ class Colors:
     def __enter__(self):
         if not self.file.exists():
             sys.exit(127)
-
-        with self.file.open("r") as f:
-            for match in PATTERN.finditer(f.read()):
-                name, value = match.groups()
-                yield ColorType(name, value)
+        return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def load(self, form="hex"):
+    def _stream(self):
+        with self.file.open("r", encoding="utf-8") as f:
+            for match in PATTERN.finditer(f.read()):
+                name, value = match.groups()
+                yield ColorType(name, value)
 
+    def load(self, form="hex"):
         valid_keywords = [
             "theme_",
             "bg_",
@@ -122,10 +119,9 @@ class Colors:
             "placeholder_",
         ]
 
-        with self as color_stream:
-            for color in color_stream:
+        with self:
+            for color in self._stream():
                 name_lower = color.name.lower()
-
                 if any(keyword in name_lower for keyword in valid_keywords):
                     self.colors[color.name] = color.to(form)
 
@@ -143,7 +139,6 @@ class Template(Colors):
     ) -> None:
         super().__init__(file_path)
         self.load(form)
-
         self.div = ": " if css_like else " = " if ini_like else " "
         self.end = ";" if css_like else ""
         self.block = block
@@ -169,15 +164,11 @@ class Template(Colors):
 
 
 def update_colors(file: Path = COLORS_FILE):
-
     theme = get_gtk_theme()
     paths = locate_gtk_css(theme)
 
     if not paths:
-        print(
-            f"Error: no css found '{theme}'.",
-            file=sys.stderr,
-        )
+        print(f"Error: no css found '{theme}'.", file=sys.stderr)
         sys.exit(1)
 
     extracted = Template(
@@ -198,9 +189,12 @@ def update_colors(file: Path = COLORS_FILE):
         sys.exit(1)
 
     file.parent.mkdir(parents=True, exist_ok=True)
-    with file.open("w", encoding="utf-8") as f:
-        f.write(str(extracted))
-        f.write("\n")
+    file.write_text(str(extracted) + "\n", encoding="utf-8")
+
+
+def write_to_config(target_path: Path, content: str):
+    target_path.parent.mkdir(parents=True, exist_ok=True)
+    target_path.write_text(content, encoding="utf-8")
 
 
 def main():
@@ -213,7 +207,7 @@ def main():
     group.add_argument("--rasi", dest="as_rofi", action="store_true")
     group.add_argument("--foot", dest="as_foot", action="store_true")
     group.add_argument("--waybar", dest="as_waybar", action="store_true")
-    group.add_argument("--default", dest="as_waybar", action="store_true")
+    group.add_argument("--default", dest="as_default", action="store_true")
 
     args = parser.parse_args()
 
@@ -224,8 +218,8 @@ def main():
         template = Template(
             args.path, form="hex", css_like=False, block=("set", "{", "}"), prefix="$"
         )
-        sway = CONFIG / "sway/sway-colors-include.st"
-        sway.write_text(str(template))
+        sway = CONFIG / "sway/theme/sway-colors-include.color"
+        write_to_config(sway, str(template))
         print(template)
 
     elif args.as_rofi:
@@ -237,8 +231,9 @@ def main():
             prefix="--",
         )
         rofi = CONFIG / "rofi/rofi-colors-include.rasi"
-        rofi.write_text(str(template).replace("_", "-"))
-        print(str(template).replace("_", "-"))
+        formatted_content = str(template).replace("_", "-")
+        write_to_config(rofi, formatted_content)
+        print(formatted_content)
 
     elif args.as_foot:
         template = Template(
@@ -249,7 +244,7 @@ def main():
             block=("[colors]", "", ""),
         )
         foot = CONFIG / "foot/foot-colors-include.ini"
-        foot.write_text(str(template))
+        write_to_config(foot, str(template))
         print(template)
 
     elif args.as_waybar:
@@ -261,12 +256,11 @@ def main():
             setter="@define-color",
         )
         template.end = ";"
-
         waybar = CONFIG / "waybar/waybar-colors-include.css"
-        waybar.write_text(str(template))
+        write_to_config(waybar, str(template))
         print(template)
 
-    elif args.dafault:
+    elif args.as_default:
         template = Template(
             args.path,
             form="alpha_rgb",
