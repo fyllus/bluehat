@@ -1,6 +1,6 @@
 include $BLUEHAT/src/theme/color.st
 include $BLUEHAT/src/theme/define.st
-include $BLUEHAT/src/var/paths.sv
+
 
 set {
 	$__SWAY_FUZZY sway-menu
@@ -13,9 +13,9 @@ set {
 
 	$__SCRATCH $__SWAY_FUZZY scratchpad $__MENU_ARGS
 
-	$__SCREENSHOT $__SWAY_FUZZY screenshot $__MENU_ARGS
+	$__SCREENSHOT $__SWAY_FUZZY image $__MENU_ARGS
 
-	$__BGSELEC sway-wall $PICTURES/wallpaper \
+	$__BGSELEC sway-wall $WALLPAPERS \
 		"bg+:$wmenu_BG" \
 	    "fg+:$wmenu_bg" \
 	    "bg:-1" \
