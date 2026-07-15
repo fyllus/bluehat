@@ -4,7 +4,7 @@ export DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-unix:path=$XDG_RUNT
 
 SWAY_INIT="/tmp/sway-init.log"
 
-sway-them --update --sway
+sway-theme --update --sway
 sleep 1
 
 if ! pgrep -x dunst >/dev/null; then
