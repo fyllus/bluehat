@@ -1,5 +1,16 @@
+<h5 align="center">Notice: These images are considered beta.</h5>
 
-# bluehat &nbsp; [![bluebuild build badge](https://github.com/fyllus/bluehat/actions/workflows/build.yml/badge.svg)](https://github.com/fyllus/bluehat/actions/workflows/build.yml)
+<p align="center">
+  <a href="https://github.com/fyllus/bluehat">
+    <img src="https://github.com/fyllus/bluehat/blob/main/files/system/usr/share/plymouth/themes/spinner/watermark.png" href="[https://github.com/fyllus/bluehat](https://github.com/fyllus/bluehat)" width=128 />
+  </a>
+</p>
+
+<h1 align="center">BlueHat</h1>
+
+---
+
+[![bluebuild build badge](https://github.com/fyllus/bluehat/actions/workflows/build.yml/badge.svg)](https://github.com/fyllus/bluehat/actions/workflows/build.yml)
 
 A minimalist, performance-oriented custom Fedora Atomic image built on top of the uBlue (`base-main`) ecosystem.
 
