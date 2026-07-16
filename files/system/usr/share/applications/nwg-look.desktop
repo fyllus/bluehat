@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Theme
+Comment=Customizes GTK3 look and feel settings
+Comment[pl]=Dostosowuje ustawienia środowiska graficznego GTK3
+Keywords=windows;preferences;settings;theme;style;appearance;look;
+Keywords[pl]=okna;preferencje;ustawienia;motyw;styl;wygląd;
+Icon=nwg-look
+Exec=bash $SCRIPTS/theme-man
+NotShowIn=GNOME;KDE;XFCE;MATE;
+StartupNotify=true
+Categories=GTK;Settings;DesktopSettings;

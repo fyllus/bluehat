@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+nwg-look
+
+sway-theme --update --sway 
+
+[[ -d $HOME/.config/sway/theme/sway-colors-include.color ]] && swaymsg reload
