@@ -3,7 +3,7 @@
 # It handles different modes (apps, screenshot, powermenu, scratchpad)
 # and forwards arguments directly to wmenu.
 
-[[ -d "$HOME_MENUS" ]] && MENUS="$HOME_MENUS" || MENUS="$USR_MENUS"
+[[ -d "$HOME_MENUS" ]] && MENUS="$HOME_MENUS" || MENUS="$USR_MENUS" || MENUS="/usr/share/menus"
 CACHE="$HOME/.cache/apps"
 
 mode-scratchpad-windows () {
