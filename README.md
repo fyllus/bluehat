@@ -2,7 +2,7 @@
 
 <p align="center">
   <a href="https://github.com/fyllus/bluehat">
-    <img src="https://github.com/fyllus/bluehat/blob/main/files/system/usr/share/plymouth/themes/spinner/watermark.png" href="[https://github.com/fyllus/bluehat](https://github.com/fyllus/bluehat)" width=256 />
+    <img src="https://github.com/fyllus/bluehat/blob/main/files/system/usr/share/plymouth/themes/spinner/watermark.png" href="[https://github.com/fyllus/bluehat](https://github.com/fyllus/bluehat)" width=180 />
   </a>
 </p>
 
