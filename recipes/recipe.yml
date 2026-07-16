@@ -78,6 +78,10 @@ modules:
         - pamixer
         - brightnessctl
 
+  # Last Custom Scripts  
   - type: script
     scripts:
       - greetd.sh
+
+  # Initramfs rebuild
+  - type: initramfs
