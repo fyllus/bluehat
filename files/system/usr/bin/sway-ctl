@@ -1,50 +1,131 @@
 #!/usr/bin/env bash
 
+show-main-help() {
+    cat << EOF
+Usage: $(basename "$0") [action] <module> [options]
+
+Core Modules (Direct or via 'get'/'set'):
+  time                      Date and time information.
+  memory                    Memory usage and space metrics.
+  cpu                       Processor temperature and load.
+  battery                   Battery level and status.
+  wifi                      Wireless network interface status and SSID.
+  idle-toggle               Enable/Disable swayidle background process.
+
+Legacy Actions (Optional):
+  get <module> [options]    Fetch system information.
+  set <module>              Execute system configurations or actions.
+
+Information:
+  Use '$(basename "$0") <module> --help' for details on a specific module.
+EOF
+}
+
 module-time() {
-    local action="$1"
-    case "$action" in
-        --format)
-            date '+󰅐  %I:%M %p - %d/%m'
+    case "$1" in
+        --help)
+            cat << EOF
+Options for 'time' module:
+  --default       Returns standard date and time format (  %c).
+  --date-ext-1    Returns short day, date, and month (  %a %d %b).
+  --time          Returns current time only (󰥔  %I:%M %p).
+EOF
+            ;;
+        --default)
+            date '+  %c'
+            ;;
+        --date-ext-1)
+            date '+  %a %d %b'
+            ;;
+        --time)
+            date '+󰥔  %I:%M %p'
+            ;;
+        *)
+            show-main-help
             ;;
     esac
 }
 
 module-memory() {
-    local action="$1"
-    case "$action" in
-        --perc-usage)
-            free | awk '/^Mem:/ {printf "  %.0f%%\n", $3/$2 * 100}'
-            ;;
+    if [[ "$1" == "--help" ]]; then
+        cat << EOF
+Options for 'memory' module:
+  --perc-using    Memory usage percentage (based on actual available memory).
+  --perc-free     Available/free memory percentage.
+  --mb-using      Memory usage converted to MB.
+  --mb-free       Available memory converted to MB.
+  --gb-using      Memory usage converted to GB.
+  --gb-free       Available memory converted to GB.
+EOF
+        return
+    fi
+
+    local total free avail
+    read -r total free avail < <(awk '/^MemTotal:/ {t=$2} /^MemFree:/ {f=$2} /^MemAvailable:/ {a=$2} END {print t, f, a}' /proc/meminfo)
+    local used=$((total - avail))
+
+    case "$1" in
+        --perc-using) awk -v u="$used" -v t="$total" 'BEGIN {printf "  %.2f%%\n", (u/t)*100}' ;;
+        --perc-free)  awk -v a="$avail" -v t="$total" 'BEGIN {printf "  %.2f%%\n", (a/t)*100}' ;;
+        --mb-using)   awk -v u="$used" 'BEGIN {printf "  %.2f MB\n", u / 1024}' ;;
+        --mb-free)    awk -v a="$avail" 'BEGIN {printf "  %.2f MB\n", a / 1024}' ;;
+        --gb-using)   awk -v u="$used" 'BEGIN {printf "  %.2f GB\n", u / 1024 / 1024}' ;;
+        --gb-free)    awk -v a="$avail" 'BEGIN {printf "  %.2f GB\n", a / 1024 / 1024}' ;;
+        *)            show-main-help ;;
     esac
 }
 
 module-cpu() {
-    local action="$1"
-    case "$action" in
+    case "$1" in
+        --help)
+            cat << EOF
+Options for 'cpu' module:
+  --temp     Current temperature read directly from /sys/class/thermal.
+  --usage    Overall CPU usage calculated from /proc/stat.
+EOF
+            ;;
         --temp)
-            sensors | awk '/Package id 0/ {print " " $4; exit} /Core 0/ {print " " $3; exit}'
+            if [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+                local raw_temp
+                raw_temp=$(cat /sys/class/thermal/thermal_zone0/temp)
+                printf " %.1f°C\n" "$(awk -v t="$raw_temp" 'BEGIN {print t / 1000}')"
+            fi
             ;;
         --usage)
             grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5); printf "  %.0f%%\n", usage}'
+            ;;
+        *)
+            show-main-help
             ;;
     esac
 }
 
 module-battery() {
-    local action="$1"
-    case "$action" in
+    if [[ "$1" == "--help" ]]; then
+        cat << EOF
+Options for 'battery' module:
+  --level    Displays dynamic icon based on status and percentage. Triggers notification if < 10%.
+  *          Any other flag (or none) returns just the clean percentage string (e.g., 95%).
+EOF
+        return
+    fi
+
+    case "$1" in
         --level)
-            local perc val icon idx
+            local val icon idx
             local lock_file="/tmp/battery_low.lock"
 
-            perc=$(bash "${BASH_SOURCE[0]}" get battery)
-            val="${perc%\%}"
+            if [ -f /sys/class/power_supply/BAT0/capacity ]; then
+                val=$(cat /sys/class/power_supply/BAT0/capacity)
+            else
+                val=$(cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -n 1)
+            fi
 
             local norm=("󰁺" "󰁽" "󰁿" "󰂁" "󰁹")
             local plugged=("󰢜" "󰂇" "󰢝" "󰂊" "󰂅")
 
             local -n icons
-            if acpi -b | grep -qE 'Charging|Full|Plugged'; then
+            if grep -qE 'Charging|Full' /sys/class/power_supply/BAT*/status 2>/dev/null; then
                 icons=plugged
                 rm -f "$lock_file"
             else
@@ -69,31 +150,98 @@ module-battery() {
                 rm -f "$lock_file"
             fi
 
-            printf "%s %s\n" "$icon" "$perc"
+            printf "%s %d%%\n" "$icon" "$val"
             ;;
          *)
-            acpi -b | awk -F, '{split($2, cap, "%"); printf "%d%%\n", cap[1]}'
+            if [ -f /sys/class/power_supply/BAT0/capacity ]; then
+                cat /sys/class/power_supply/BAT0/capacity | awk '{printf "%d%%\n", $1}'
+            else
+                cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -n 1 | awk '{printf "%d%%\n", $1}'
+            fi
             ;;
     esac
 }
+
+module-wifi() {
+    if [[ "$1" == "--help" ]]; then
+        cat << EOF
+Options for 'wifi' module:
+  --status    Returns active SSID with signal strength icon, or '󰤮  Disconnected'.
+  --ip        Returns the private IPv4 address assigned to the wireless interface.
+EOF
+        return
+    fi
+
+    local interface=""
+    for dev in /sys/class/net/*; do
+        if [[ -d "$dev/wireless" ]]; then
+            interface=$(basename "$dev")
+            break
+        fi
+    done
+
+    if [[ -z "$interface" ]] || [[ "$(cat /sys/class/net/"$interface"/operstate 2>/dev/null)" != "up" ]]; then
+        case "$1" in
+            --ip) echo "No IP" ;;
+            *)    echo "󰤮  Disconnected" ;;
+        esac
+        return
+    fi
+
+    case "$1" in
+        --status)
+            local ssid link quality icon idx
+            ssid=$(iw dev "$interface" link | awk -F ': ' '/SSID/ {print $2}')
+            [[ -z "$ssid" ]] && ssid="Unknown"
+
+            # Fallback seguro para o cálculo de qualidade se o /proc/net/wireless não existir
+            if [[ -f /proc/net/wireless ]]; then
+                link=$(awk -v iface="$interface" '$1 ~ iface {print $3}' /proc/net/wireless | tr -d '.')
+                quality=$(( (link * 100) / 70 ))
+            else
+                # Se não houver /proc/net/wireless, estima pelo sinal em dBm do 'iw'
+                local dbm
+                dbm=$(iw dev "$interface" link | awk '/signal:/ {print $2}')
+                if [[ -n "$dbm" ]]; then
+                    if (( dbm <= -100 )); then quality=0
+                    elif (( dbm >= -50 )); then quality=100
+                    else quality=$(( 2 * (dbm + 100) ))
+                    fi
+                else
+                    quality=100
+                fi
+            fi
+
+            local icons=("󰤯" "󰤟" "󰤢" "󰤥" "󰤨")
+            if (( quality < 20 )); then   idx=0
+            elif (( quality < 40 )); then idx=1
+            elif (( quality < 60 )); then idx=2
+            elif (( quality < 80 )); then idx=3
+            else                          idx=4
+            fi
+            icon="${icons[$idx]}"
+
+            printf "%s %s\n" "$icon" "$ssid"
+            ;;
+        --ip)
+            ip addr show dev "$interface" | awk '/inet / {print $2}' | cut -d/ -f1 | head -n 1
+            ;;
+        *)
+            show-main-help
+            ;;
+    esac
+}
+
 idle-toggle () {
-
-    # Timeouts (in seconds)
-    local stage1=300 # Low brightness
-    local stage2=600 # Lockscreen
-    local stage3=900 # Display off
-
-    # Commands
+    local stage1=300 stage2=600 stage3=900
     local set_lock="gtklock -d"
     local set_display_on="(swaymsg 'output * power on' && brightnessctl set 5%) 2>/dev/null "
     local set_display_off="(brightnessctl -s && brightnessctl set 0% && swaymsg 'output * power off') 2>/dev/null"
 
-    # Toggle execution
     if pgrep -f "swayidle" >/dev/null; then
         pkill -f swayidle
-        notify-send "SwayIdle" "Idle/Lock desligado" -t 600
+        notify-send "SwayIdle" "Idle/Lock disabled" -t 600
     else
-        # Arguments array to preserve tokenization without eval
         local swayidle_args=(
             timeout "$stage1" "(brightnessctl -s && brightnessctl set 1%) 2>/dev/null"
             resume "$set_display_on"
@@ -101,48 +249,28 @@ idle-toggle () {
             timeout "$stage3" "$set_display_off"
             before-sleep "$set_lock"
         )
-
         (swayidle -w "${swayidle_args[@]}") &
-
-        notify-send "SwayIdle" "Idle/Lock ativado" -t 600
+        notify-send "SwayIdle" "Idle/Lock enabled" -t 600
     fi
-
 }
-get-info() {
-    local mod="$1"
-    shift
-
-    case "$mod" in
-        time)    module-time $@ ;;
-        memory)  module-memory $@ ;;
-        cpu)     module-cpu $@ ;;
-        battery) module-battery $@ ;;
-    esac
-}
-
-set-info () {
-    local mod="$1"
-    shift
-    case "$mod" in
-        idle-toggle)
-            idle-toggle
-            ;;
-    esac
-}
-
-
-
 
 main () {
-    local action="$1"
+    local token="$1"
     shift
-    case "$action" in
-        get)
-            get-info $@
-            ;;
-        set)
-            set-info $@
-            ;;
+
+    if [[ "$token" == "get" || "$token" == "set" ]]; then
+        token="$1"
+        shift
+    fi
+
+    case "$token" in
+        time)        module-time "$@" ;;
+        memory)      module-memory "$@" ;;
+        cpu)         module-cpu "$@" ;;
+        battery)     module-battery "$@" ;;
+        wifi)        module-wifi "$@" ;;
+        idle-toggle) idle-toggle ;;
+        --help|*)    show-main-help ;;
     esac
 }
 main "$@"

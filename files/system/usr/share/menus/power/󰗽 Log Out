@@ -1,3 +1,10 @@
 #!/usr/bin/env bash
 
-swaymsg exit
+zenity --question\
+    --title="Session"\
+    --text="Terminate Sway Session?"\
+    --ok-label="Logout"\
+    --cancel-label="Cancel" \
+    --icon="system-log-out"\
+    --default-cancel\
+    && swaymsg exit

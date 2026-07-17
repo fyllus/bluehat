@@ -44,5 +44,5 @@ layer_effects "swaybar" {
     blur            $swayfx_blur
     blur_xray       $swayfx_blur_xray
     shadows         $swayfx_shadows
-    corner_radius  $swayfx_corner_radius
+    corner_radius   $swayfx_corner_radius
 }

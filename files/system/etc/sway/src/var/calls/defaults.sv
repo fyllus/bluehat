@@ -1,4 +1,4 @@
-include $BLUEHAT/src/var/calls/helper.sv
+include $_BLUEDIR_SWAY/src/var/calls/helper.sv
 
 
 set {

@@ -1,55 +1,85 @@
 #!/usr/bin/env bash
 
+show-help() {
+    cat << EOF
+Usage: $(basename "$0") [options]
+
+Options:
+  --ssh <provider>                 Generate an SSH ED25519 keypair inside ~/.ssh/<provider>/
+                                   and append the Host configuration to ~/.ssh/config.
+
+  --sign <provider> <name> <data>  Sign the provided data string using the key from
+                                   ~/.ssh/<provider>/key under the specified namespace (name).
+
+  -h, --help                       Show this help message.
+EOF
+}
+
 gen_ssh() {
-	local _provider="$1"
+    local _provider="$1"
 
-	mkdir -p ~/.ssh/"$_provider"
+    if [[ -z "$_provider" ]]; then
+        echo "Error: Missing <provider> argument."
+        show-help
+        exit 1
+    fi
 
+    mkdir -p ~/.ssh/"$_provider"
 
-	ssh-keygen -t ed25519 -f ~/.ssh/"$_provider"/key -C "$USER@git.com"
+    ssh-keygen -t ed25519 -f ~/.ssh/"$_provider"/key -C "$USER@git.com"
 
-
-	cat <<EOF >> ~/.ssh/config
+    cat <<EOF >> ~/.ssh/config
 Host $_provider
-	HostName $_provider
-	User git
-	IdentityFile ~/.ssh/$_provider/key
-	IdentitiesOnly yes
+    HostName $_provider
+    User git
+    IdentityFile ~/.ssh/$_provider/key
+    IdentitiesOnly yes
 EOF
 
+    chmod 700 ~/.ssh ~/.ssh/"$_provider"
+    chmod 600 ~/.ssh/config ~/.ssh/"$_provider"/key
+    chmod 644 ~/.ssh/"$_provider"/key.pub
 
-	chmod 700 ~/.ssh ~/.ssh/"$_provider"
-	chmod 600 ~/.ssh/config ~/.ssh/"$_provider"/key
-	chmod 644 ~/.ssh/"$_provider"/key.pub
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/"$_provider"/key
 
-	eval "$(ssh-agent -s)"
-	ssh-add ~/.ssh/"$_provider"/key
-
-	cat ~/.ssh/"$_provider"/key.pub
+    cat ~/.ssh/"$_provider"/key.pub
 }
 
 gen_sign(){
-	local _provider="$1"
-	local _name="$2"
-	local _sign="$3"
+    local _provider="$1"
+    local _name="$2"
+    local _sign="$3"
 
-	echo -n "$_sign" > /tmp/ot
+    if [[ -z "$_provider" || -z "$_name" || -z "$_sign" ]]; then
+        echo "Error: Missing arguments for signing operation."
+        show-help
+        exit 1
+    fi
 
-	unset SSH_ASKPASS
-	ssh-keygen -Y sign -n "$_name" -f ~/.ssh/"$_provider"/key /tmp/ot
+    echo -n "$_sign" > /tmp/ot
 
-	cat /tmp/ot.sig
-	rm /tmp/ot /tmp/ot.sig
+    unset SSH_ASKPASS
+    ssh-keygen -Y sign -n "$_name" -f ~/.ssh/"$_provider"/key /tmp/ot
+
+    cat /tmp/ot.sig
+    rm /tmp/ot /tmp/ot.sig
 }
 
 main(){
-	local opt="$1"
-	shift
+    local opt="$1"
+    shift
 
-	case $opt in
-		--ssh) gen_ssh "$@" ;;
-		--sign) gen_sign "$@" ;;
-	esac
+    case "$opt" in
+        --ssh)  gen_ssh "$@" ;;
+        --sign) gen_sign "$@" ;;
+        -h|--help|"") show-help ;;
+        *)
+            echo "Error: Unknown option '$opt'"
+            show-help
+            exit 1
+            ;;
+    esac
 }
 
 main "$@"

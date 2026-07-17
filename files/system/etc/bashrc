@@ -45,8 +45,7 @@ if [ -z "$BASHRCSOURCED" ]; then
         unset i
     fi
 
-    if [ -f /usr/libexec/sway/resource/bashrc ]; then
-    	export SOURCE_TERM="/usr/libexec/sway/resource/bashrc"
-        source $SOURCE_TERM
+    if [ -f /usr/libexec/bashrc ]; then    	
+        source $_BLUEDIR_BASHRC
     fi
 fi

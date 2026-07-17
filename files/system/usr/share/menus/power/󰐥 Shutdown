@@ -1,3 +1,10 @@
 #!/usr/bin/env bash
 
-systemctl poweroff
+zenity --question\
+    --title="Shutdown"\
+    --text="Really want to shutdown?"\
+    --ok-label="Shutdown"\
+    --cancel-label="Keep Running" \
+    --icon="system-shutdown"\
+    --default-cancel\
+    && systemctl poweroff

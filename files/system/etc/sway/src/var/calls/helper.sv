@@ -1,5 +1,5 @@
-include $BLUEHAT/src/theme/color.st
-include $BLUEHAT/src/theme/define.st
+include $_BLUEDIR_SWAY/src/theme/color.st
+include $_BLUEDIR_SWAY/src/theme/define.st
 
 
 set {

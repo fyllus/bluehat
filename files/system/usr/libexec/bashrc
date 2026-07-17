@@ -139,19 +139,19 @@ __msg() {
 __git_info() {
     local branch=$(git branch --show-current 2>/dev/null)
     [ -z "$branch" ] && return
-    local status=""
-    [ -n "$(git status --porcelain 2>/dev/null)" ] && status="*"
-    echo "  $(ansi_esc "${branch}${status}" -r1)"
+    local status=""
+    [ -n "$(git status --porcelain 2>/dev/null)" ] && status=""
+    echo ":󰊢  $(ansi_esc "  ${branch} ${status}" -r1)"
 }
 
 __build_ps1_vars() {
-    local msg="\n 📂 $(ansi_esc "\w" -c1)"
+    local msg="\n   $(ansi_esc "\w" -c1)"
     if [ -n "$VIRTUAL_ENV" ]; then
         local venv_name="${VIRTUAL_ENV_PROMPT:-NONE}"
-        msg+=" $(ansi_esc "(${venv_name// /})" -g1)"
+        msg+=" $(ansi_esc " (${venv_name// /})" -g1)"
     fi
     git rev-parse --is-inside-work-tree &>/dev/null && msg+="$(__git_info)"
-    PS1="${msg}\n ❯ "
+    PS1="${msg}\n   "
 }
 
 # =====================================================================
@@ -165,7 +165,7 @@ alias rebase="__context-rebase"
 alias pybuild="python3 -m build"
 alias pypi="python3 -m twine upload --verbose dist"
 alias swayssh="/usr/libexec/sway/scripts/ssh-config"
-alias swayfz="/usr/libexec/sway/scripts/sway-fuzzy"
+alias swayfz="/usr/libexec/sway/scripts/sway-fuzz"
 alias swayctl="/usr/libexec/sway/scripts/sway-control"
 alias swaywall="/usr/libexec/sway/scripts/sway-background"
 

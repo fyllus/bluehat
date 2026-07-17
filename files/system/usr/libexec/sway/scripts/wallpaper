@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Abre o seletor de arquivos filtrando por imagens
+selected=$(zenity --file-selection \
+  --title="Select your image" \
+  --file-filter="Pictures (*.jpg *.jpeg *.png *.webp *.gif) | *.jpg *.jpeg *.png *.webp *.gif")
+
+# Se o usuário cancelar ou fechar a janela, encerra sem erro
+[ $? -ne 0 ] && exit 0
+
+# Atualiza a configuração do Sway e aplica o wallpaper instantaneamente
+if [[ -f "$selected" ]]; then
+    mkdir -p "$HOME/.config/sway"
+    echo "set \$custom_wallpaper $selected" > "$HOME/.config/sway/custom_theme_wallpaper.st"
+    swaymsg output "*" bg "$selected" fill
+fi
