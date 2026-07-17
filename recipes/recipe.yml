@@ -29,8 +29,14 @@ modules:
         - podman-compose
         - podman
         - openssh-clients
+        - udisk2
+        - udiskie
+        - dosfstools
+        - ntfs-3g
+        - exfat-tools
 
-        # Terminal & CLI        
+        # Terminal & CLI
+        - dialog        
         - greetd
         - tuigreet
         - grim
@@ -53,7 +59,9 @@ modules:
         # Window Manager & Display Server
         - swayfx
         - gtklock
-        - xorg-x11-server-Xwayland
+        - dialog
+        - zenity
+        #- xorg-x11-server-Xwayland
 
         # Visual & GUI Apps
         - nwg-look
@@ -64,9 +72,9 @@ modules:
         - librewolf
 
         # Fonts
-        - google-noto-sans-fonts
-        - google-noto-fonts-common
-        - fontawesome-fonts
+        #- google-noto-sans-fonts
+        #- google-noto-fonts-common
+        #- fontawesome-fonts
 
         # Core LXQt
         - lxqt-policykit
