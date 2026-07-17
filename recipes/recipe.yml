@@ -29,14 +29,13 @@ modules:
         - podman-compose
         - podman
         - openssh-clients
-        - udisk2
-        - udiskie
-        - dosfstools
-        - ntfs-3g
-        - exfat-tools
+        #- udisk2
+        #- udiskie
+        #- dosfstools
+        #- ntfs-3g
+        #- exfat-tools
 
-        # Terminal & CLI
-        - dialog        
+        # Terminal & CLI       
         - greetd
         - tuigreet
         - grim
