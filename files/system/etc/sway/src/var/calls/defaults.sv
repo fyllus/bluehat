@@ -1,4 +1,4 @@
-include $_BLUEDIR_SWAY/src/var/calls/helper.sv
+include $SWAYDIR/src/var/calls/helper.sv
 
 
 set {

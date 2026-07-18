@@ -1,10 +1,10 @@
 
-_BLUEDIR_SWAY="/etc/sway"
-_BLUEDIR_SCRIPTS="/usr/libexec/sway/scripts"
-_BLUEDIR_WALLPAPERS="$HOME/Pictures/wallpaper"
-_BLUEDIR_BASHRC="/usr/libexec/bashrc"
-_BLUEDIR_DEFMENUS="/usr/share/menus"
-_BLUEDIR_USERMENUS="$HOME/.menus"
+SWAYDIR="/etc/sway"
+SCRIPTS="/usr/libexec/sway/scripts"
+WALLPAPERS="$HOME/Pictures/wallpaper"
+BASHRC="/usr/libexec/source/bashrc"
+DEFMENUS="/usr/share/menus"
+USERMENUS="$HOME/.menus"
 
 
 PATH="$HOME/.local/bin:$PATH"

@@ -1,5 +1,5 @@
-include $_BLUEDIR_SWAY/src/theme/color.st
-include $_BLUEDIR_SWAY/src/theme/define.st
+include $SWAYDIR/src/theme/color.st
+include $SWAYDIR/src/theme/define.st
 
 
 set {

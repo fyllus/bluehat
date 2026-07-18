@@ -45,7 +45,7 @@ if [ -z "$BASHRCSOURCED" ]; then
         unset i
     fi
 
-    if [ -f /usr/libexec/bashrc ]; then
-        source /usr/libexec/bashrc
+    if [ -f /usr/libexec/source/bashrc ]; then
+        source /usr/libexec/source/bashrc
     fi
 fi
