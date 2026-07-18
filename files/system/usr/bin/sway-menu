@@ -3,7 +3,7 @@
 # It handles different modes (apps, screenshot, powermenu, scratchpad)
 # and forwards arguments directly to wmenu.
 
-[[ -d "$_BLUDIR_USERMENUS" ]] && MENUS="$_BLUEDIR_USERMENUS" || MENUS="$_BLUEDIR_DEFMENUS" || MENUS="/usr/share/menus"
+[[ -d "$HOME_MENUS" ]] && MENUS="$HOME_MENUS" || MENUS="$USR_MENUS" || MENUS="/usr/share/menus"
 CACHE="$HOME/.cache/apps"
 
 mode-scratchpad-windows () {
@@ -21,7 +21,7 @@ main () {
         apps)
             if [[ ! -d "$CACHE" ]]; then
                 # Run compiler script if cache does not exist
-                bash "$_BLUEDIR_SCRITPS/sway-menu-compile"
+                bash "$SCRITPS/sway-menu-compile"
             fi
             choosen=$(ls "$CACHE" | wmenu "$@")
             [[ -n "$choosen" ]] && exec bash "$CACHE/$choosen"
