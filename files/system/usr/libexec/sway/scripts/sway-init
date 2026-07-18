@@ -13,4 +13,4 @@ if ! pgrep -x dunst >/dev/null; then
     dunst &>/dev/null & disown
 fi
 
-bash $SCRIPTS/sway-apps-compile
+bash $_BLUEDIR_SCRIPTS/sway-apps-compile

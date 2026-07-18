@@ -21,7 +21,7 @@ main () {
         apps)
             if [[ ! -d "$CACHE" ]]; then
                 # Run compiler script if cache does not exist
-                bash "$SCRIPTS/sway-menu-compile"
+                bash "$_BLUEDIR_SCRITPS/sway-menu-compile"
             fi
             choosen=$(ls "$CACHE" | wmenu "$@")
             [[ -n "$choosen" ]] && exec bash "$CACHE/$choosen"

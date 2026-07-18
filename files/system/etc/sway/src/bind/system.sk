@@ -1,4 +1,4 @@
-include $_BLUEDIR_SWAY/src/bind/modifiers.sk
+include ./modifiers.sk
 
 # DEFAULT KEYMAP
 set {

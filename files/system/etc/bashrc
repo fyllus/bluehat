@@ -45,7 +45,7 @@ if [ -z "$BASHRCSOURCED" ]; then
         unset i
     fi
 
-    if [ -f /usr/libexec/bashrc ]; then    	
-        source $_BLUEDIR_BASHRC
+    if [ -f /usr/libexec/bashrc ]; then
+        source /usr/libexec/bashrc
     fi
 fi

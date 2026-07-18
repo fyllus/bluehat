@@ -161,7 +161,40 @@ EOF
             ;;
     esac
 }
+module-backlight() {
+    case "$1" in
+        --help)
+            cat << EOF
+Options for 'backlight' module:
+  --list-devices            Lists available backlight targets in /sys/class/backlight.
+  <device_name>             Returns the current brightness percentage for the specified device.
+EOF
+            ;;
+        --list-devices)
+            ls /sys/class/backlight
+            ;;
+        *)
+            if [[ -z "$1" ]]; then
+                show-main-help
+                return
+            fi
 
+            local dev_dir="/sys/class/backlight/$1"
+            if [[ -f "$dev_dir/brightness" && -f "$dev_dir/max_brightness" ]]; then
+                local cur max
+                cur=$(cat "$dev_dir/brightness")
+                max=$(cat "$dev_dir/max_brightness")
+                if (( max > 0 )); then
+                    printf "󰃠  %.2f%%\n" "$(awk -v c="$cur" -v m="$max" 'BEGIN {print (c/m)*100}')"
+                else
+                    echo "󰃠  0%"
+                fi
+            else
+                echo "󰃠  Err"
+            fi
+            ;;
+    esac
+}
 module-wifi() {
     if [[ "$1" == "--help" ]]; then
         cat << EOF
@@ -269,6 +302,7 @@ main () {
         cpu)         module-cpu "$@" ;;
         battery)     module-battery "$@" ;;
         wifi)        module-wifi "$@" ;;
+        backlight)   module-backlight "$@" ;;
         idle-toggle) idle-toggle ;;
         --help|*)    show-main-help ;;
     esac
