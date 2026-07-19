@@ -19,6 +19,7 @@ WatermarkVerticalAlignment=.96
 Transition=none
 TransitionDuration=0.0
 
+BackgroundBackgroundCollor=0x0d131b
 BackgroundStartColor=0x000000
 BackgroundEndColor=0x000000
 ProgressBarBackgroundColor=0x606060
