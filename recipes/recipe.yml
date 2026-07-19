@@ -19,6 +19,7 @@ modules:
         - tofik/nwg-shell
         - lihaohong/yazi
         - che/zed
+        - zeno/scrcpy
       files:
         - https://repo.librewolf.net/librewolf.repo
 
@@ -31,6 +32,8 @@ modules:
         - openssh-clients
         - cronie
         - gum
+        - scrcpy
+        - android-tools
         #- udisk2
         #- udiskie
         #- dosfstools
