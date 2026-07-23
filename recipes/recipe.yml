@@ -25,7 +25,7 @@ modules:
 
     install:
       packages:
-        # Core Dev & Container Stack
+        #Core Dev & Container Stack
         - git
         - podman-compose
         - podman
@@ -36,15 +36,15 @@ modules:
         - android-tools
         - meson
         - ninja-build
-        - pkg-config
-        - libcairo2-dev
-        - libpango1.0-dev
-        - libwayland-dev
-        - wayland-protocols
-        - libxkbcommon-dev
+        - pkgconf-pkg-config
+        - cairo-devel
+        - pango-devel
+        - wayland-devel
+        - wayland-protocols-devel
+        - libxkbcommon-devel
         - scdoc
                 
-        # Terminal & CLI       
+        # Terminal & CLI        
         - greetd
         - tuigreet
         - grim
