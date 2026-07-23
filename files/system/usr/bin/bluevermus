@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+
+VERSION_FILE="version.sh"
+
+
+if [[ -f "$VERSION_FILE" ]]; then
+    source "$VERSION_FILE"
+else
+    V_STAGE="a"
+    V_MAJOR="1"
+    V_MINOR="0"
+fi
+
+
+if [[ $# -eq 2 ]]; then
+
+    case "$1" in
+
+        stage)
+            V_STAGE="$2"
+        ;;
+
+        major)
+            V_MAJOR="$2"
+            V_MINOR="0"
+        ;;
+
+        minor)
+            V_MINOR="$2"
+        ;;
+
+    esac
+
+fi
+
+
+V_PATCH="$(date '+%Y%m%d%H%M')"
+
+FULL_VERSION="${V_STAGE}${V_MAJOR}.${V_MINOR}.${V_PATCH}"
+
+
+cat > "$VERSION_FILE" <<EOF
+# Generated automatically
+
+V_STAGE="${V_STAGE}"
+V_MAJOR="${V_MAJOR}"
+V_MINOR="${V_MINOR}"
+V_PATCH="${V_PATCH}"
+
+FULL_VERSION="${FULL_VERSION}"
+EOF
+
+
+echo "Version: ${FULL_VERSION}"

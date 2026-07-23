@@ -34,12 +34,16 @@ modules:
         - gum
         - scrcpy
         - android-tools
-        #- udisk2
-        #- udiskie
-        #- dosfstools
-        #- ntfs-3g
-        #- exfat-tools
-
+        - meson
+        - ninja-build
+        - pkg-config
+        - libcairo2-dev
+        - libpango1.0-dev
+        - libwayland-dev
+        - wayland-protocols
+        - libxkbcommon-dev
+        - scdoc
+                
         # Terminal & CLI       
         - greetd
         - tuigreet
@@ -64,7 +68,7 @@ modules:
         - gtklock
         - dialog
         - zenity
-        #- xorg-x11-server-Xwayland
+        
 
         # Visual & GUI Apps
         - nwg-look
@@ -73,12 +77,7 @@ modules:
         - gimp
         - godot
         - librewolf
-
-        # Fonts
-        #- google-noto-sans-fonts
-        #- google-noto-fonts-common
-        #- fontawesome-fonts
-
+        
         # Core LXQt
         - lxqt-policykit
 

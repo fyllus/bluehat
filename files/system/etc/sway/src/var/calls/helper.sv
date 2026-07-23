@@ -3,7 +3,7 @@ include $SWAYDIR/src/theme/define.st
 
 
 set {
-	$__SWAY_FUZZY sway-menu
+	$__SWAY_FUZZY bluemenu
 
 	$__MENU_ARGS -i -f "$font_family $font_size" -N "$wmenu_bg" -n "$wmenu_fg" -S "$wmenu_BG" -s "$wmenu_FG"
 
@@ -15,7 +15,7 @@ set {
 
 	$__SCREENSHOT $__SWAY_FUZZY image $__MENU_ARGS
 
-	$__BGSELEC sway-wall $WALLPAPERS \
+	$__BGSELEC bluewall $WALLPAPERS \
 		"bg+:$wmenu_BG" \
 	    "fg+:$wmenu_bg" \
 	    "bg:-1" \

@@ -1,4 +1,4 @@
-<h5 align="center">Notice: These images are considered beta.</h5>
+<h5 align="center">Note: For now, this image is for personal study and is purely experimental.</h5>
 
 <p align="center">
   <a href="https://github.com/fyllus/bluehat">
