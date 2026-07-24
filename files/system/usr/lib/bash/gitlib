@@ -3,7 +3,7 @@
 [[ -n ${_GITLIB_LOADED:-} ]] && return
 readonly _GITLIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
 
 get_commit_head_cksum() {
     git log -1 | cksum | awk '{print $1}'

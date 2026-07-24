@@ -3,15 +3,14 @@
 [[ -n ${_BASHRC_LOADED:-} ]] && return
 readonly _BASHRC_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
 
 export MOZ_ENABLE_WAYLAND=1
 
 # ALIASES
-source "$__LIB_DIR/aliaslib"
+source "$BASHLIB/aliaslib"
 
 # PS1
-source "$__LIB_DIR/ps1lib"
+source "$BASHLIB/ps1lib"
 
 export PROMPT_COMMAND=build_ps1
 

@@ -3,7 +3,7 @@
 [[ -n ${_CONTEXTLIB_LOADED:-} ]] && return
 readonly _CONTEXTLIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
 
 context-rebase() {
     local action="$1"

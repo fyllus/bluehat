@@ -3,7 +3,7 @@
 [[ -n ${_ANSILIB_LOADED:-} ]] && return
 readonly _ANSILIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
 
 __flag_color() {
     case "$1" in

@@ -3,10 +3,10 @@
 [[ -n ${_PS1LIB_LOADED:-} ]] && return
 readonly _PS1LIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
 
-source "$__LIB_DIR/gitlib"
-source "$__LIB_DIR/ansilib"
+
+source "$BASHLIB/gitlib"
+source "$BASHLIB/ansilib"
 
 ps1_git_info() {
     local status branch

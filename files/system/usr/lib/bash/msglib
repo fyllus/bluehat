@@ -3,9 +3,9 @@
 [[ -n ${_MSGLIB_LOADED:-} ]] && return
 readonly _MSGLIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
 
-source "$__LIB_DIR/ansilib"
+
+source "$BASHLIB/ansilib"
 
 write_msg() {
     local level="$1" title="$2" text="$3"

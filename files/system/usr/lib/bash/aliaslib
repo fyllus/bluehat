@@ -3,10 +3,8 @@
 [[ -n ${_ALIASLIB_LOADED:-} ]] && return
 readonly _ALIASLIB_LOADED=1
 
-__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
-
 # CONTEXTLIB
-source "$__LIB_DIR/contextlib"
+source "$BASHLIB/contextlib"
 
 alias exit="context-exit"
 alias see="context-see"
