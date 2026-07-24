@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+[[ -n ${_CONTEXTLIB_LOADED:-} ]] && return
+readonly _CONTEXTLIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+context-rebase() {
+    local action="$1"
+    case "$action" in
+        -u|--unverified)
+            [ -e "$PWD/rebase-u.txt" ] && cat "$PWD/rebase-u.txt"
+            ;;
+        -s|--signed)
+            [ -e "$PWD/rebase-s.txt" ] && cat "$PWD/rebase-s.txt"
+            ;;
+        *)
+            [ -e "$PWD/rebase-t.txt" ] && cat "$PWD/rebase-t.txt"
+            ;;
+    esac
+}
+
+context-cd() {
+    builtin cd "$@" || return 1
+    if [ -f ".venv/bin/activate" ]; then
+        [ -n "$VIRTUAL_ENV" ] && [ "$VIRTUAL_ENV" != "$(pwd)/.venv" ] && deactivate
+        [ -z "$VIRTUAL_ENV" ] && source .venv/bin/activate
+    elif [ -n "$VIRTUAL_ENV" ]; then
+        deactivate
+    fi
+}
+
+context-exit() {
+    [ -n "$VIRTUAL_ENV" ] && deactivate || builtin exit
+}
+
+context-see() {
+    command -v bat &>/dev/null && bat "$@" || cat "$@"
+}

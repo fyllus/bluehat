@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+[[ -n ${_GITLIB_LOADED:-} ]] && return
+readonly _GITLIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+get_commit_head_cksum() {
+    git log -1 | cksum | awk '{print $1}'
+}
+
+get_curr_status() {
+    git status --porcelain 2>/dev/null
+}
+
+is_status_ok() {
+    [ -z "$(get_curr_status)" ]
+}
+
+get_curr_branch() {
+    git branch --show-current 2>/dev/null
+}
+
+is_git_repo() {
+    git rev-parse --is-inside-work-tree &>/dev/null
+}
+
+get_last_tag() {
+    local last_tag
+    last_tag=$(git tag --sort=-v:refname 2>/dev/null | head -n 1)
+
+    [[ -z "$last_tag" ]] && return 1
+
+    local tag=(${last_tag//./ })
+    case $1 in
+        --major) echo "${tag[0]:-0}" ;;
+        --minor) echo "${tag[1]:-0}" ;;
+        --patch) echo "${tag[2]:-0}" ;;
+    esac
+}
+
+set_version() {
+    local message="$1"
+    local major="$2"
+    local minor="$3"
+    local patch="$4"
+    local stage="$5"
+
+    git commit -a -m "$message" &>/dev/null
+    git tag -a "$stage$major.$minor.$patch" -m "$message" &>/dev/null
+}
+
+set_project() {
+    local option="$1"
+    shift
+
+    case $option in
+        --author-name)
+            git config user.name "$*"
+            ;;
+        --author-email)
+            git config user.email "$*"
+            ;;
+    esac
+}
+
+gen_ver_patch() {
+    local val=$(( ($(date '+%s') + $(get_commit_head_cksum)) % 10000 ))
+    val=$(printf "%03d" "$val")
+    local last_patch=$(get_last_tag --patch)
+
+    if [[ -n "$last_patch" ]] && (( 10#$val == 10#$last_patch )); then
+        val=$(printf "%03d" $((10#$val + 1)))
+    fi
+    echo "$val"
+}

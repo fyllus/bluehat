@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+[[ -n ${_PS1LIB_LOADED:-} ]] && return
+readonly _PS1LIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+source "$__LIB_DIR/gitlib"
+source "$__LIB_DIR/ansilib"
+
+ps1_git_info() {
+    local status branch
+
+    branch=$(get_curr_branch)
+    [ -z "$branch" ] && return
+
+    is_status_ok && status="" || status=""
+
+    echo -e ":󰊢  $(ansi_esc "  ${branch} ${status}" -r1)"
+}
+
+build_ps1() {
+    local msg="\n   $(ansi_esc "$PWD" -c1)"
+    if [ -n "$VIRTUAL_ENV" ]; then
+        local venv_name="${VIRTUAL_ENV_PROMPT:-NONE}"
+        msg+=" $(ansi_esc " (${venv_name// /})" -g1)"
+    fi
+    is_git_repo && msg+="$(ps1_git_info)"
+    PS1="${msg}\n   "
+}

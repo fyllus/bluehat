@@ -2,7 +2,10 @@
 SWAYDIR="/etc/sway"
 SCRIPTS="/usr/libexec/sway/scripts"
 WALLPAPERS="$HOME/Pictures/wallpaper"
-BASHRC="/usr/libexec/source/bashrc"
+BASHLIB="/usr/lib/bash"
+
+BASHRC="$BASHLIB/bashrc"
+
 DEFMENUS="/usr/share/menus"
 USERMENUS="$HOME/.menus"
 

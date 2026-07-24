@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+[[ -n ${_ALIASLIB_LOADED:-} ]] && return
+readonly _ALIASLIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+# CONTEXTLIB
+source "$__LIB_DIR/contextlib"
+
+alias exit="context-exit"
+alias see="context-see"
+alias cd="context-cd"
+alias rebase="context-rebase"
+alias pybuild="python3 -m build"
+alias pypi="python3 -m twine upload --verbose dist"

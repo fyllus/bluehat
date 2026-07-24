@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+[[ -n ${_MSGLIB_LOADED:-} ]] && return
+readonly _MSGLIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+source "$__LIB_DIR/ansilib"
+
+write_msg() {
+    local level="$1" title="$2" text="$3"
+    local level_esc="$4" title_esc="$5" text_esc="$6"
+    local time=$(date '+%Y-%m-%d %H:%M')
+    local msg flag clr
+
+    case "$level" in
+        info)  flag="$(ansi_esc "(INFO)" "${level_esc:-Ny1}")"; clr="${title_esc:-Nc1}" ;;
+        ok)    flag="$(ansi_esc "(OK)" "${level_esc:-Nb1}")"; clr="${title_esc:-Ny1}" ;;
+        warn)  flag="$(ansi_esc "(WARN)" "${level_esc:-m135}")"; clr="${title_esc:-b135}" ;;
+        error) flag="$(ansi_esc "(ERROR)" "${level_esc:-r135}")"; clr="${title_esc:-y135}" ;;
+        bip)   flag="$(ansi_esc "(BIP)" "${level_esc:-Nw1}")"; clr="${title_esc:-Ng1}" ;;
+        *)     flag="$(ansi_esc "[ $level ]" "${level_esc:-Ny15}")"; clr="${title_esc:-Nb1}" ;;
+    esac
+
+    local formatted_text
+    if [[ -n "$text_esc" && "$text_esc" != "-" ]]; then
+        formatted_text="$(ansi_esc "$text" "$text_esc")"
+    else
+        formatted_text="$text"
+    fi
+
+    msg="$flag: $(ansi_esc "$title ->>" "$clr")\n\n$formatted_text"
+    echo -e "\n$msg\n\nat < $(ansi_esc "$time" "${level_esc:-$clr}") >\n"
+}

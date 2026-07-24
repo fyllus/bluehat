@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+[[ -n ${_ANSILIB_LOADED:-} ]] && return
+readonly _ANSILIB_LOADED=1
+
+__LIB_DIR="$(dirname "{BASH_SOURCE[0]}" )"
+
+__flag_color() {
+    case "$1" in
+        [Rr1]) echo "1" ;;
+        [Gg2]) echo "2" ;;
+        [Yy3]) echo "3" ;;
+        [Bb4]) echo "4" ;;
+        [Mm5]) echo "5" ;;
+        [Cc6]) echo "6" ;;
+        [Ww7]) echo "7" ;;
+        [Nn0]) echo "0" ;;
+        *)     echo "9" ;;
+    esac
+}
+
+__style_parser() {
+    local style="$1"
+    local codes=()
+    local i char
+
+    for (( i=0; i<${#style}; i++ )); do
+        char="${style:i:1}"
+        if [[ "$char" =~ [0-9] ]]; then
+            codes+=("$char")
+        elif [[ "$char" =~ [[:upper:]] ]]; then
+            codes+=("4$(__flag_color "$char")")
+        elif [[ "$char" =~ [[:lower:]] ]]; then
+            codes+=("3$(__flag_color "$char")")
+        fi
+    done
+
+    local IFS=';'
+    echo "${codes[*]}"
+}
+
+ansi_esc() {
+    local text="$1"
+    local style_code="$2"
+
+    if [[ -z "$style_code" || "$style_code" == "-" ]]; then
+        echo -n "$text"
+        return
+    fi
+
+    local codes
+    codes=$(__style_parser "$style_code")
+
+    echo -e "\033[${codes}m${text}\033[0m"
+}
+
+__multiply() {
+    printf -v line "%${1}s" ""
+    echo "${line// /$2}"
+}
+
+line() {
+    local len="${1:-100}"
+    local char="${2:-*}"
+    local _esc="${3:--}"
+    ansi_esc "$(__multiply "$len" "$char")" "$_esc"
+}
